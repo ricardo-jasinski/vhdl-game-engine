@@ -5,7 +5,6 @@ use work.colors_pkg.all;
 use work.sprites_pkg.all;
 use std.textio.all;
 use std.env.all;
---use work.resource_data_pkg.all;
 
 entity sprites_engine_tb is
 end;
@@ -92,12 +91,11 @@ begin
         wait_clock_cycles(2);
         reset <= '0';
 
-        report "looping...";
         for y in 0 to 15 loop
             for x in 0 to 15 loop
                 raster_position <= (x, y);
                 wait_clock_cycles(1);
-                write(row, sprite_pixel, field => 3);
+                write(row, sprite_pixel, field => 2);
             end loop;
             writeline(output, row);
         end loop;

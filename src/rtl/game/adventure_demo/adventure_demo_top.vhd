@@ -9,14 +9,17 @@ use work.resource_data_helper_pkg.all;
 use work.npc_pkg.all;
 use work.vga_pkg.all;
 
-
+-- Top-level entity for the "Adventure" game demo using VAGE. On top of this
+-- entity, there should be only a very simple wrapper intantiating this entity
+-- and connecting its ports to the board used. It should be fairly easy to use
+-- this entity in other hardware platforms, without any modifications.
 entity adventure_demo_top is
     port (
         -- system clock used for all user logic
         clock: in std_logic;
         -- synchronous reset for all user logic
         reset: in std_logic;
-
+        -- debug pins to help debug game logic (e.g., connecting to board leds)
         debug_bits: out std_logic_vector(7 downto 0);
 
         vga_clk: out std_logic;
