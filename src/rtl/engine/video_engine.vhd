@@ -23,8 +23,10 @@ entity video_engine is
         clock_50MHz: in std_logic;
         -- synchronous reset for all user logic
         reset: in std_logic;
+        -- VGA pixel clock (~27.175 MHz)
+        vga_clock_in: in std_logic;
         -- bundle with all signals required to drive the VGA display
-        vga_signals: out vga_signals_type;
+        vga_signals: out vga_output_signals_type;
         sprites_coordinates: in point_array_type(SPRITES_INITIAL_VALUES'range);
         sprite_collisions_results: out bool_vector;
         background_bitmap: paletted_bitmap_type
@@ -42,23 +44,11 @@ architecture rtl of video_engine is
     signal video_on: std_logic;
     signal raster_position: point_type;
 
-    -- 25MHz pixel clock generated at top level from DE2 50MHz clock
-    signal pixel_clock: std_logic;
-
-    -- Component declaration for the PLL used to generate the 25 MHz pixel
-    -- clock from the board 50 MHz system clock
-    component video_pll
-        port(
-            inclk0: in std_logic := '0';
-            c0: out std_logic
-        );
-    end component;
-
 begin
 
     vga_timing: entity work.vga_timing_generator
         port map(
-            pixel_clock    => pixel_clock,
+            vga_clock_in    => vga_clock_in,
             horiz_sync_out => vga_hsync,
             vert_sync_out  => vga_vsync,
             video_on       => video_on,
@@ -72,7 +62,7 @@ begin
             SPRITES_COLLISION_QUERY => SPRITES_COLLISION_QUERY
         )
         port map(
-            clock => pixel_clock,
+            clock => vga_clock_in,
             reset => reset,
             raster_position => raster_position / ZOOM_FACTOR,
             sprites_coordinates => sprites_coordinates,
@@ -81,18 +71,14 @@ begin
             sprite_collisions_results => sprite_collisions_results
         );
 
-    -- PLL below is used to generate the pixel clock frequency
-    -- Uses DE2 50Mhz clock for PLL's input clock
-    video_PLL_inst : video_PLL port map (
-        inclk0 => clock_50MHz,
-        c0 => pixel_clock
-    );
-
     vga_signals.hsync <= vga_hsync;
     vga_signals.vsync <= vga_vsync;
     vga_signals.sync <= '1';
     vga_signals.blank <= '1'; -- looks like this one is active low...
-    vga_signals.pixel_clk <= pixel_clock;
+
+    -- The same input clock is added to the output signals because it may
+    -- required by the video DAC chip
+    vga_signals.vga_clock_out <= vga_clock_in;
 
     process (all) is
         variable palette_pixel: palette_color_type;

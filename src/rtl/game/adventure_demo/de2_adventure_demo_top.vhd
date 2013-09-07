@@ -1,44 +1,71 @@
 library ieee;
 use ieee.std_logic_1164.all;
-use work.graphics_types_pkg.all;
 
 -- VAGE (VHDL Advanced Game Engine) demo using the 'Adventure' game demo and
--- the Altera DE2 board as a hardware platform.
+-- the Altera DE2 board as a hardware platform. The purpose of this file is
+-- simply to instantiate the game top entity. It should not contain any game-
+-- related code. This is also a perfect place for vendor-specific and board-
+-- specific code, such as PLLs.
 entity de2_adventure_demo_top is
+    -- Port names as defined in the standard DE2 settings file.
     port (
-        -- Port names as defined in the standard DE2 settings file.
+        -- 50 MHz clock provided by the DE2  board
         clock_50: in std_logic;
+        -- Input toggle switches
+        sw: in std_logic_vector(17 downto 0);
+        -- Input push-button switches, active low
+        key: in std_logic_vector(3 downto 0);
+        -- Green leds
+        ledg: out std_logic_vector(7 downto 0);
         vga_clk: out std_logic;
         vga_blank: out std_logic;
-        vga_hs, vga_vs: out std_logic;
+        vga_hs: out std_logic;
+        vga_vs: out std_logic;
         vga_sync: out std_logic;
         vga_r: out std_logic_vector(9 downto 0);
         vga_g: out std_logic_vector(9 downto 0);
-        vga_b: out std_logic_vector(9 downto 0);
-        sw: in std_logic_vector(17 downto 0);
-        key: in std_logic_vector(3 downto 0);
-        ledg: out std_logic_vector(7 downto 0)
+        vga_b: out std_logic_vector(9 downto 0)
     );
 end;
 
 architecture rtl of de2_adventure_demo_top is
+
+    -- Component declaration for the PLL used to generate the 25 MHz pixel
+    -- clock from the board 50 MHz system clock
+    component video_pll
+        port(
+            inclk0: in std_logic := '0';
+            c0: out std_logic
+        );
+    end component;
+
+    signal vga_pll_clock_out: std_logic;
+
 begin
 
     game: entity work.adventure_demo_top
         port map(
-            clock          => clock_50,
+            clock_50_Mhz          => clock_50,
             reset          => sw(17),
             debug_bits     => ledg,
-            vga_clk        => vga_clk,
+            vga_clock_in   => vga_pll_clock_out,
+            vga_clock_out  => vga_clk,
             vga_blank      => vga_blank,
-            vga_hs         => vga_hs,
-            vga_vs         => vga_vs,
-            vga_sync       => vga_sync,
-            vga_r          => vga_r,
-            vga_g          => vga_g,
-            vga_b          => vga_b,
+            vga_n_hsync         => vga_hs,
+            vga_n_vsync         => vga_vs,
+            vga_n_sync       => vga_sync,
+            vga_red          => vga_r,
+            vga_green          => vga_g,
+            vga_blue          => vga_b,
             input_switches => sw(1 downto 0),
             input_buttons  => not key
         );
+
+    -- PLL below is used to generate the pixel clock frequency
+    -- Uses DE2 50Mhz clock for PLL's input clock
+    video_PLL_inst : video_PLL port map (
+        inclk0 => clock_50,
+        c0 => vga_pll_clock_out
+    );
 
 end;

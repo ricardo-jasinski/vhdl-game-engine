@@ -15,35 +15,48 @@ use work.vga_pkg.all;
 -- this entity in other hardware platforms, without any modifications.
 entity adventure_demo_top is
     port (
-        -- system clock used for all user logic
-        clock: in std_logic;
-        -- synchronous reset for all user logic
+        -- synchronous reset, used by all user logic
         reset: in std_logic;
-        -- debug pins to help debug game logic (e.g., connecting to board leds)
-        debug_bits: out std_logic_vector(7 downto 0);
-
-        vga_clk: out std_logic;
+        -- system clock used for all user logic
+        clock_50_Mhz: in std_logic;
+        -- VGA clock used by the video renderer; should be approximately
+        -- 25.715 MHz (25 MHz is acceptable)
+        vga_clock_in: in std_logic;
+        -- Same as VGA input clock, must be passed along to the video DAC chip
+        vga_clock_out: out std_logic;
+        -- VGA blank, low during horizontal or vertical retrace (pixels should be blank)
         vga_blank: out std_logic;
-        vga_hs, vga_vs: out std_logic;
-        vga_sync: out std_logic;
-        vga_r: out std_logic_vector(9 downto 0);
-        vga_g: out std_logic_vector(9 downto 0);
-        vga_b: out std_logic_vector(9 downto 0);
+        -- VGA Hsync, low during horizontal synchronism pulse
+        vga_n_hsync: out std_logic;
+        -- VGA Vsync, low during vertical synchronism pulse
+        vga_n_vsync: out std_logic;
+        -- Composite sync for the ADV7123; if this feature is not used, should
+        -- be tied to '0'
+        vga_n_sync: out std_logic;
+        vga_red: out std_logic_vector(9 downto 0);
+        vga_green: out std_logic_vector(9 downto 0);
+        vga_blue: out std_logic_vector(9 downto 0);
 
         input_switches: in std_logic_vector(1 downto 0);
-        input_buttons: in std_logic_vector(3 downto 0)
+        input_buttons: in std_logic_vector(3 downto 0);
+
+        -- debug pins to help debug game logic (e.g., connecting to board leds)
+        debug_bits: out std_logic_vector(7 downto 0)
     );
 end;
 
 architecture rtl of adventure_demo_top is
 
-
-    -- Medium-resolution time base, used for game events and reading the inputs
+    -- Medium-resolution time base (used for game state updates and
+    -- reading the inputs switches)
     signal time_base_50_ms: std_logic;
-    -- Monotonic
-    signal elapsed_time: integer range 0 to 1000;
+    -- Maximum value for the game time counter
+    constant GAME_TIMER_50_MS_MAX: integer := 1000;
+    -- Monotonic game time counter, updated every 50 ms. Can be used by
+    -- the game logic (eg., to animate or move sprites)
+    signal elapsed_time: integer range 0 to GAME_TIMER_50_MS_MAX;
 
-    signal vga_signals: vga_signals_type;
+    signal vga_output_signals: vga_output_signals_type;
 
     -- Each sprite must have a position, which may be constant or changeable.
     -- For static items (chest, axe) we may use a constant or a hardcoded value
@@ -153,10 +166,10 @@ begin
 
     ----------------------------------------------------------------------------
     -- Section 1: Update player position based on input buttons
-    update_player_position: process (clock, reset) begin
+    update_player_position: process (clock_50_Mhz, reset) begin
         if reset then
             player_position <= (128, 128);
-        elsif rising_edge(clock) then
+        elsif rising_edge(clock_50_Mhz) then
             if time_base_50_ms then
                 if button_right then
                     player_position.x <= player_position.x + 1;
@@ -185,7 +198,7 @@ begin
         generic map (
             NPC_DEFINITIONS => NPCS
         ) port map (
-            clock => clock,
+            clock => clock_50_Mhz,
             reset => reset,
             time_base => time_base_50_ms,
             target_positions => npc_target_positions,
@@ -217,10 +230,10 @@ begin
     -- RESET --> PLAY --> GAME_WON or GAME_OVER
     game_won <= treasure_found;
     game_over <= death_by_ghost or death_by_scorpion or death_by_oryx;
-    process (clock, reset) begin
+    process (clock_50_Mhz, reset) begin
         if reset then
             game_state <= GS_RESET;
-        elsif rising_edge(clock) then
+        elsif rising_edge(clock_50_Mhz) then
             case game_state is
                 when GS_RESET =>
                     if input_buttons /= "0000" then
@@ -255,7 +268,7 @@ begin
             SPRITES_INITIAL_VALUES => SPRITES_INITIAL_VALUES,
             SPRITES_COLLISION_QUERY => SPRITES_COLLISION_QUERY
         ) port map (
-            clock_50MHz => clock,
+            clock_50MHz => clock_50_Mhz,
             reset => reset,
             sprites_coordinates => sprites_coordinates,
             sprite_collisions_results => sprite_collisions_results,
@@ -263,17 +276,18 @@ begin
             time_base_50_ms => time_base_50_ms,
             game_state => game_state,
             background_bitmap => background_bitmap,
-            vga_signals => vga_signals
+            vga_clock_in => vga_clock_in,
+            vga_signals => vga_output_signals
         );
 
-    vga_clk   <= vga_signals.pixel_clk;
-    vga_blank <= vga_signals.blank;
-    vga_hs    <= vga_signals.hsync;
-    vga_vs    <= vga_signals.vsync;
-    vga_sync  <= vga_signals.sync;
-    vga_r     <= vga_signals.red;
-    vga_g     <= vga_signals.green;
-    vga_b     <= vga_signals.blue;
+    vga_clock_out <= vga_output_signals.vga_clock_out;
+    vga_blank <= vga_output_signals.blank;
+    vga_n_hsync <= vga_output_signals.hsync;
+    vga_n_vsync <= vga_output_signals.vsync;
+    vga_n_sync <= vga_output_signals.sync;
+    vga_red <= vga_output_signals.red;
+    vga_green <= vga_output_signals.green;
+    vga_blue <= vga_output_signals.blue;
 
     debug_bits(0) <= '1' when death_by_scorpion else '0';
     debug_bits(1) <= '1' when death_by_ghost else '0';

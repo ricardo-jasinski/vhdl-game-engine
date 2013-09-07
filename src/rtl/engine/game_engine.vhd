@@ -36,7 +36,8 @@ entity game_engine is
         game_state: in game_state_type;
         background_bitmap: paletted_bitmap_type;
 
-        vga_signals: out vga_signals_type
+        vga_clock_in: in std_logic;
+        vga_signals: out vga_output_signals_type
     );
 end;
 
@@ -58,6 +59,7 @@ begin
         ) port map(
             clock_50MHz => clock_50MHz,
             reset => reset,
+            vga_clock_in => vga_clock_in,
             vga_signals => vga_signals,
             sprites_coordinates => sprites_coordinates,
             sprite_collisions_results => sprite_collisions_results,

@@ -9,8 +9,9 @@ entity vga_timing_generator is
         V_COUNT_MAX: integer := 525
     );
     port(
-        pixel_clock: in  std_logic;
-        horiz_sync_out, vert_sync_out : out std_logic;
+        vga_clock_in: in  std_logic;
+        horiz_sync_out: out std_logic;
+        vert_sync_out : out std_logic;
         video_on: out std_logic;
         pixel_row: out integer range 0 to V_COUNT_MAX;
         pixel_column: out integer range 0 to H_COUNT_MAX
@@ -44,7 +45,7 @@ begin
 
     process
     begin
-        wait until rising_edge(pixel_clock);
+        wait until rising_edge(vga_clock_in);
         --Generate Horizontal and Vertical Timing signals for Video signal
         -- H_count counts pixels (#pixels across + extra time for sync signals)
         --
