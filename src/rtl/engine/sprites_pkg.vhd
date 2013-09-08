@@ -13,9 +13,6 @@ package sprites_pkg is
     constant SPRITE_WIDTH: integer := BITMAP_WIDTH;
     constant SPRITE_HEIGHT: integer := BITMAP_HEIGHT;
 
---    -- A bitmap is a 2D array in which each element is a value from the palette
---    type paletted_bitmap_type is array (natural range <>, natural range <>) of palette_color_type;
-
     type sprite_type is record
         x: integer;
         y: integer;
@@ -24,15 +21,12 @@ package sprites_pkg is
 
     type sprites_array_type is array (natural range <>) of sprite_type;
 
-
     function sprite_contains_coordinate(sprite: sprite_type; coordinate: point_type) return boolean;
     function update_sprite(sprite: sprite_type; raster_position: point_type; position: point_type) return sprite_type;
     function get_sprite_pixel(sprite: sprite_type; raster_position: point_type) return palette_color_type;
 
     type sprite_id_pair is array (0 to 1) of integer;
     type sprite_collision_query_type is array (natural range <>) of sprite_id_pair;
-
---    type bool_vector is array (natural range <>) of boolean;
 
     function check_collision(sprite_1, sprite_2: sprite_type) return boolean;
     function get_sprites_collisions(sprites: sprites_array_type; collisions_query: sprite_collision_query_type) return bool_vector;

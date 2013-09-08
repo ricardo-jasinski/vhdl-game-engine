@@ -14,6 +14,7 @@ entity game_logic is
         time_base_50_ms: in std_logic;
         npc_positions: in point_array_type;
         npc_target_positions: out point_array_type;
+        -- Each element is 'true' while the two corresponding sprites are colliding.
         sprite_collisions: in bool_vector;
         sprites_positions: out point_array_type;
         input_buttons: in input_buttons_type;
@@ -24,12 +25,6 @@ entity game_logic is
 end;
 
 architecture rtl of game_logic is
-    alias ghost_position: point_type is npc_positions(0);
-    alias scorpion_position: point_type is npc_positions(1);
-    alias bat_position: point_type is npc_positions(2);
-    alias oryx_position: point_type is npc_positions(3);
-    alias archer_position: point_type is npc_positions(4);
-    alias reaper_position: point_type is npc_positions(5);
 
     -- Each sprite must have a position, which may be constant or changeable.
     -- For static items (chest, axe) we may use a constant or a hardcoded value
@@ -43,8 +38,13 @@ architecture rtl of game_logic is
     signal game_logic_state: game_state_type;
     signal game_over, game_won: boolean;
 
-    -- Each element is 'true' while the two corresponding sprites are colliding.
---    signal sprite_collisions_results: bool_vector(sprite_collision_results'range);
+    -- Aliases to help us work with the NPC positions
+    alias ghost_position: point_type is npc_positions(0);
+    alias scorpion_position: point_type is npc_positions(1);
+    alias bat_position: point_type is npc_positions(2);
+    alias oryx_position: point_type is npc_positions(3);
+    alias archer_position: point_type is npc_positions(4);
+    alias reaper_position: point_type is npc_positions(5);
 
     -- Aliases to help us monitor the game state. The player dies when an
     -- enemy is touched.
@@ -54,6 +54,14 @@ architecture rtl of game_logic is
     alias treasure_found: boolean is sprite_collisions(3);
 
 begin
+
+    ----------------------------------------------------------------------------
+    -- Overall architecture description:
+    --   1) Update player position
+    --   2) Update NPC inputs (target positions)
+    --   3) Provide a screen position for each sprite
+    --   4) Update game state
+    ----------------------------------------------------------------------------
 
     ----------------------------------------------------------------------------
     -- Section 1: Update player position based on input buttons
@@ -84,8 +92,6 @@ begin
     npc_target_positions(3) <= player_position;
     npc_target_positions(4) <= player_position + (-12,0);
     npc_target_positions(5) <= player_position + (12, -4);
-
-
 
     ----------------------------------------------------------------------------
     -- Section 3) Provide a screen position for each sprite. For static objects,

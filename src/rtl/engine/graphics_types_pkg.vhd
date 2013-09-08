@@ -49,5 +49,4 @@ package body graphics_types_pkg is
         return (lhs.x / rhs, lhs.y / rhs);
     end;
 
-
 end;
