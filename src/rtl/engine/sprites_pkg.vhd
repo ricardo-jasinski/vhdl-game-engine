@@ -1,5 +1,6 @@
 use work.colors_pkg.all;
 use work.graphics_types_pkg.all;
+use work.basic_types_pkg.all;
 
 -- Data types and functions for working with sprites in a high level of
 -- abstraction.
@@ -31,7 +32,7 @@ package sprites_pkg is
     type sprite_id_pair is array (0 to 1) of integer;
     type sprite_collision_query_type is array (natural range <>) of sprite_id_pair;
 
-    type bool_vector is array (natural range <>) of boolean;
+--    type bool_vector is array (natural range <>) of boolean;
 
     function check_collision(sprite_1, sprite_2: sprite_type) return boolean;
     function get_sprites_collisions(sprites: sprites_array_type; collisions_query: sprite_collision_query_type) return bool_vector;

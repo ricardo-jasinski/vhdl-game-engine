@@ -4,6 +4,7 @@ use work.graphics_types_pkg.all;
 use work.sprites_pkg.all;
 use work.game_state_pkg.all;
 use work.vga_pkg.all;
+use work.basic_types_pkg.all;
 
 -- wanted features:
 --   * sprite movement (done!)

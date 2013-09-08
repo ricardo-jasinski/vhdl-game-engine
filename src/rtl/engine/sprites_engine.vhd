@@ -3,6 +3,7 @@ use ieee.std_logic_1164.all;
 use work.graphics_types_pkg.all;
 use work.sprites_pkg.all;
 use work.colors_pkg.all;
+use work.basic_types_pkg.all;
 
 -- It is worth noting that the sprites engine should not (and does not) access
 -- any game-specific constants or code. Therefore, it can be readily reused

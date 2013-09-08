@@ -1,6 +1,7 @@
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
+use work.basic_types_pkg.all;
 use work.graphics_types_pkg.all;
 use work.sprites_pkg.all;
 use work.game_state_pkg.all;
