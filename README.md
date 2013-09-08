@@ -1,7 +1,10 @@
 VAGE - VHDL "Advanced" Game Engine
 ==================================
 A game engine implemented purely in hardware using the VHDL language
+
 (C) Ricardo Jasinski, 2013
+
+Screenshots on the Wiki: https://github.com/ricardo-jasinski/vhdl-game-engine/wiki
 
 Summary
 =======
