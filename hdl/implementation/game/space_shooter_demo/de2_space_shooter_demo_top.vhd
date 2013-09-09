@@ -43,7 +43,7 @@ architecture rtl of de2_adventure_demo_top is
 
 begin
 
-    game: entity work.adventure_demo_top
+    game: entity work.space_shooter_demo_top
         port map(
             clock_50_Mhz  => clock_50,
             reset => sw(17),

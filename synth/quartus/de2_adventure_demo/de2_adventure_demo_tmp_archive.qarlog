@@ -1,0 +1,45 @@
+Quartus II Archive log --	C:/work/vhdl-game-engine/synth/quartus/de2_adventure_demo/de2_adventure_demo_tmp_archive.qarlog
+
+Archive:	C:/work/vhdl-game-engine/synth/quartus/de2_adventure_demo/de2_adventure_demo_tmp_archive.qar
+Date:		Mon Sep 09 02:00:01 2013
+Quartus II 32-bit		12.1 Build 243 01/31/2013 SP 1 SJ Web Edition
+
+	=========== Files Selected: ===========
+C:/work/vhdl-game-engine/hdl/implementation/engine/basic_types_pkg.vhd
+C:/work/vhdl-game-engine/hdl/implementation/engine/colors_pkg.vhd
+C:/work/vhdl-game-engine/hdl/implementation/engine/game_engine.vhd
+C:/work/vhdl-game-engine/hdl/implementation/engine/graphics_types_pkg.vhd
+C:/work/vhdl-game-engine/hdl/implementation/engine/input_types_pkg.vhd
+C:/work/vhdl-game-engine/hdl/implementation/engine/npc_ai_bouncer.vhd
+C:/work/vhdl-game-engine/hdl/implementation/engine/npc_ai_follower.vhd
+C:/work/vhdl-game-engine/hdl/implementation/engine/npc_pkg.vhd
+C:/work/vhdl-game-engine/hdl/implementation/engine/npcs_engine.vhd
+C:/work/vhdl-game-engine/hdl/implementation/engine/sprites_engine.vhd
+C:/work/vhdl-game-engine/hdl/implementation/engine/sprites_pkg.vhd
+C:/work/vhdl-game-engine/hdl/implementation/engine/system_timing.vhd
+C:/work/vhdl-game-engine/hdl/implementation/engine/vga_pkg.vhd
+C:/work/vhdl-game-engine/hdl/implementation/engine/vga_timing_generator.vhd
+C:/work/vhdl-game-engine/hdl/implementation/engine/video_engine.vhd
+C:/work/vhdl-game-engine/hdl/implementation/engine/video_pll.vhd
+C:/work/vhdl-game-engine/hdl/implementation/game/adventure_demo/adventure_demo_top.vhd
+C:/work/vhdl-game-engine/hdl/implementation/game/adventure_demo/de2_adventure_demo_top.vhd
+C:/work/vhdl-game-engine/hdl/implementation/game/adventure_demo/game_logic.vhd
+C:/work/vhdl-game-engine/hdl/implementation/game/adventure_demo/game_state_pkg.vhd
+C:/work/vhdl-game-engine/hdl/implementation/game/adventure_demo/resource_data_helper_pkg.vhd
+C:/work/vhdl-game-engine/hdl/implementation/game/adventure_demo/resource_data_pkg.vhd
+C:/work/vhdl-game-engine/hdl/implementation/game/adventure_demo/resource_handles_helper_pkg.vhd
+C:/work/vhdl-game-engine/hdl/implementation/game/adventure_demo/resource_handles_pkg.vhd
+C:/work/vhdl-game-engine/synth/quartus/de2_adventure_demo/assignment_defaults.qdf
+C:/work/vhdl-game-engine/synth/quartus/de2_adventure_demo/de2_adventure_demo.qpf
+C:/work/vhdl-game-engine/synth/quartus/de2_adventure_demo/de2_adventure_demo.qsf
+C:/work/vhdl-game-engine/synth/quartus/de2_adventure_demo/incremental_db/compiled_partitions/de2_adventure_demo.db_info
+	======= Total: 28 files to archive =======
+
+	================ Status: ===============
+All files archived successfully.
+
+
+******* Archived project restoration attempt on Mon Sep 09 02:00:02 2013
+Source archive file:	C:/work/vhdl-game-engine/synth/quartus/de2_adventure_demo/de2_adventure_demo_tmp_archive.qar
+Archive was extracted into	C:/work/vhdl-game-engine/synth/quartus/de2_space_shooter_demo/
+		 - successfully.

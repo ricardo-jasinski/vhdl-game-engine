@@ -71,10 +71,12 @@ architecture rtl of space_shooter_demo_top is
     -- We need to tell the sprites engine which sprites we want to monitor for
     -- collisions. The query array helps us do it neatly.
     constant SPRITES_COLLISION_QUERY: sprite_collision_query_type := make_sprites_collision_query((
-        (SORCERER_SPRITE, GHOST_SPRITE),
-        (SORCERER_SPRITE, SCORPION_SPRITE),
-        (SORCERER_SPRITE, ORYX_11_SPRITE),
-        (SORCERER_SPRITE, CHEST_SPRITE)
+        (PLAYER_SHIP_1_SPRITE, ENEMY_SHIP_SPRITE),
+        (PLAYER_SHIP_2_SPRITE, ENEMY_SHIP_SPRITE)
+--        (SORCERER_SPRITE, GHOST_SPRITE),
+--        (SORCERER_SPRITE, SCORPION_SPRITE),
+--        (SORCERER_SPRITE, ORYX_11_SPRITE),
+--        (SORCERER_SPRITE, CHEST_SPRITE)
     ));
 
     -- Each element is 'true' while the two corresponding sprites are colliding.
@@ -213,10 +215,11 @@ begin
     -- Select a background bitmap based on current game state (currently, this
     -- is the only feedback we provide the player with)
 
-    with game_state select background_bitmap <=
-        get_bitmap_from_handle(GAME_OVER_TILE_BITMAP) when GS_GAME_OVER,
-        get_bitmap_from_handle(GAME_WON_TILE_BITMAP) when GS_GAME_WON,
-        get_bitmap_from_handle(FOREST_TILE_BITMAP) when others;
+--    with game_state select background_bitmap <=
+--        get_bitmap_from_handle(GAME_OVER_TILE_BITMAP) when GS_GAME_OVER,
+--        get_bitmap_from_handle(GAME_WON_TILE_BITMAP) when GS_GAME_WON,
+--        get_bitmap_from_handle(FOREST_TILE_BITMAP) when others;
+    background_bitmap <= (others => (others => 5));
 
     ----------------------------------------------------------------------------
     -- Section 5) Convert signals between std_logic and custom data types.

@@ -50,8 +50,8 @@ architecture rtl of game_logic is
     -- enemy is touched.
     alias death_by_ghost: boolean is sprite_collisions(0);
     alias death_by_scorpion: boolean is sprite_collisions(1);
-    alias death_by_oryx: boolean is sprite_collisions(2);
-    alias treasure_found: boolean is sprite_collisions(3);
+    --alias death_by_oryx: boolean is sprite_collisions(2);
+    --alias treasure_found: boolean is sprite_collisions(3);
 
 begin
 
@@ -99,25 +99,16 @@ begin
     -- we use signals.
 
     sprites_positions <= make_sprite_positions((
-        (SORCERER_SPRITE,  player_position),
-        (AXE_SPRITE,       AXE_POSITION),
-        (ARCHER_SPRITE,    archer_position),
-        (CHEST_SPRITE,     CHEST_POSITION),
-        (GHOST_SPRITE,     ghost_position),
-        (SCORPION_SPRITE,  scorpion_position),
-        (ORYX_11_SPRITE,   oryx_position),
-        (ORYX_12_SPRITE,   oryx_position + point_type'(8,0)),
-        (ORYX_21_SPRITE,   oryx_position + point_type'(0,8)),
-        (ORYX_22_SPRITE,   oryx_position + point_type'(8,8)),
-        (BAT_SPRITE,       bat_position),
-        (REAPER_SPRITE,    reaper_position)
+        (PLAYER_SHIP_1_SPRITE, player_position),
+        (PLAYER_SHIP_2_SPRITE, player_position + point_type'(8,0)),
+        (ENEMY_SHIP_SPRITE, scorpion_position )
     ));
 
     ----------------------------------------------------------------------------
     -- Section 4) Update game state. This game has a very simple state logic:
     -- RESET --> PLAY --> GAME_WON or GAME_OVER
-    game_won <= treasure_found;
-    game_over <= death_by_ghost or death_by_scorpion or death_by_oryx;
+    game_won <= false; -- treasure_found;
+    game_over <= death_by_ghost or death_by_scorpion; -- or death_by_oryx;
     process (clock, reset) begin
         if reset then
             game_logic_state <= GS_RESET;
@@ -143,7 +134,7 @@ begin
 
     debug_bits(0) <= '1' when death_by_scorpion else '0';
     debug_bits(1) <= '1' when death_by_ghost else '0';
-    debug_bits(2) <= '1' when death_by_oryx else '0';
+    debug_bits(2) <= '1';-- when death_by_oryx else '0';
     debug_bits(3) <= '1' when game_logic_state = GS_RESET else '0';
     debug_bits(4) <= '1' when game_logic_state = GS_PLAY else '0';
     debug_bits(5) <= '1' when game_logic_state = GS_GAME_OVER else '0';
