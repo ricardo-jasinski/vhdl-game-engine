@@ -38,6 +38,11 @@ on something together.
 * Scrolling background
 * Text output
 
+I'd like to add three game demos to be used as templates for new games:
+* A space shooter demo
+* A bouncing ball ("Arkanoid") demo
+* An adventure game demo (this one is currently completed)
+
 License
 -------
 This code comes with absolutely no guarantees. This code is public domain and
