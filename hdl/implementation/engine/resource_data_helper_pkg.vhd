@@ -34,7 +34,7 @@ package body resource_data_helper_pkg is
         bitmap_handle := GAME_SPRITES(sprite_id).bitmap_handle;
         bitmap := get_bitmap_from_handle(bitmap_handle);
 
-        return (bitmap => bitmap, others => 0);
+        return (bitmap => bitmap, enabled => true, others => 0);
     end;
 
     -- We need to initialize the sprites engine with the game sprites. This

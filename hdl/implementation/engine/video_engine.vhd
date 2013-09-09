@@ -29,6 +29,7 @@ entity video_engine is
         -- bundle with all signals required to drive the VGA display
         vga_signals: out vga_output_signals_type;
         sprites_coordinates: in point_array_type(SPRITES_INITIAL_VALUES'range);
+        sprites_enabled: in bool_vector(SPRITES_INITIAL_VALUES'range);
         sprite_collisions_results: out bool_vector;
         background_bitmap: paletted_bitmap_type
     );
@@ -67,6 +68,7 @@ begin
             reset => reset,
             raster_position => raster_position / ZOOM_FACTOR,
             sprites_coordinates => sprites_coordinates,
+            sprites_enabled => sprites_enabled,
             sprite_pixel => sprite_pixel,
             sprite_pixel_is_valid => sprite_pixel_is_valid,
             sprite_collisions_results => sprite_collisions_results

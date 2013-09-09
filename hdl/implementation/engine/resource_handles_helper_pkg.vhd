@@ -7,6 +7,7 @@ package resource_handles_helper_pkg is
 
     function get_sprite_id_from_handle(sprite_handle: sprite_handle_type) return natural;
     function get_bitmap_id_from_handle(handle: bitmap_handle_type) return natural;
+    function get_collision_id_from_handle(handle: sprite_collision_handle_type) return natural;
 
     type sprite_handles_pair_type is array (0 to 1) of sprite_handle_type;
     type sprite_collision_query_initialization_type is array (natural range <>) of sprite_handles_pair_type;
@@ -60,4 +61,9 @@ package body resource_handles_helper_pkg is
     function get_bitmap_id_from_handle(handle: bitmap_handle_type) return natural is begin
         return bitmap_handle_type'pos(handle);
     end;
+
+    function get_collision_id_from_handle(handle: sprite_collision_handle_type) return natural is begin
+        return sprite_collision_handle_type'pos(handle);
+    end;
+
 end;

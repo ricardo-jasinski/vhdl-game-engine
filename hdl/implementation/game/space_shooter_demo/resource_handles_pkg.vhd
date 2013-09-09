@@ -17,7 +17,7 @@ package resource_handles_pkg is
 --        GAME_WON_TILE_BITMAP
     );
 
-    -- Enumerated type for referencing all te sprites used in the game.
+    -- Enumerated type for referencing all the sprites used in the game.
     type sprite_handle_type is (
         PLAYER_SHIP_1_SPRITE,   -- player ship (sprite 1/2)
         PLAYER_SHIP_2_SPRITE,   -- player ship (sprite 2/2)
@@ -32,8 +32,14 @@ package resource_handles_pkg is
     -- Enumerated type for referencing all sprite collisions that must be
     -- monitored in the game.
     type sprite_collision_handle_type is (
+        PLAYER_SHOT_ALIEN_1_COLLISION,
+        PLAYER_SHOT_ALIEN_2_COLLISION,
+        PLAYER_SHOT_ALIEN_3_COLLISION,
+        PLAYER_SHOT_ENEMY_1_COLLISION,
         PLAYER_1_ALIEN_1_COLLISION,
-        PLAYER_2_ALIEN_1_COLLISION
+        PLAYER_2_ALIEN_1_COLLISION,
+        PLAYER_1_ENEMY_1_COLLISION,
+        PLAYER_2_ENEMY_1_COLLISION
     );
 
     -- Enumerated type for referencing all the NPCs (non-player characters) used

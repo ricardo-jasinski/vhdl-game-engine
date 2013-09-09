@@ -5,6 +5,7 @@ use work.input_types_pkg.all;
 use work.graphics_types_pkg.all;
 use work.resource_data_helper_pkg.all;
 use work.resource_handles_pkg.all;
+use work.resource_handles_helper_pkg.all;
 use work.game_state_pkg.all;
 use work.sprites_pkg.all;
 
@@ -27,6 +28,10 @@ entity game_logic is
         -- positions and checking for collisions. The game logic defines where
         -- the sprites *are drawn* on the screen.
         sprites_positions: out point_array_type;
+
+
+        sprites_enabled: out bool_vector;
+
         -- Each element is 'true' while the two corresponding sprites are colliding.
         sprite_collisions: in bool_vector;
         input_buttons: in input_buttons_type;
@@ -45,7 +50,7 @@ architecture rtl of game_logic is
     signal player_position: point_type;
 
     -- Signals to help us keep track of the game state.
-    signal game_logic_state: game_state_type;
+    signal game_state_signal: game_state_type;
     signal game_over, game_won: boolean;
 
     -- Aliases to help us work with the NPC positions
@@ -59,6 +64,9 @@ architecture rtl of game_logic is
     -- enemy is touched.
     alias enemy_ship_collision_1: boolean is sprite_collisions(0);
     alias enemy_ship_collision_2: boolean is sprite_collisions(1);
+
+    signal sprites_enabled_signal: bool_vector(sprites_enabled'range);
+
 
 begin
 
@@ -116,6 +124,75 @@ begin
         (ALIEN_SHIP_3_SPRITE, alien_ship_3_position )
     ));
 
+
+    update_sprites_enabled: process (clock, reset) is
+        variable enabled: bool_vector(sprites_enabled'range) := (others => true);
+    begin
+        if reset then
+            enabled := (others => true);
+        elsif rising_edge(clock) then
+            if game_state_signal = GS_PLAY then
+                if sprite_collisions( get_collision_id_from_handle( PLAYER_SHOT_ALIEN_1_COLLISION ) ) then
+                    enabled( get_sprite_id_from_handle( ALIEN_SHIP_1_SPRITE ) ) := false;
+                end if;
+                if sprite_collisions( get_collision_id_from_handle( PLAYER_SHOT_ALIEN_2_COLLISION ) ) then
+                    enabled( get_sprite_id_from_handle( ALIEN_SHIP_2_SPRITE ) ) := false;
+                end if;
+                if sprite_collisions( get_collision_id_from_handle( PLAYER_SHOT_ALIEN_3_COLLISION ) ) then
+                    enabled( get_sprite_id_from_handle( ALIEN_SHIP_3_SPRITE ) ) := false;
+                end if;
+                if sprite_collisions( get_collision_id_from_handle( PLAYER_SHOT_ENEMY_1_COLLISION ) ) then
+                    enabled( get_sprite_id_from_handle( ENEMY_SHIP_1_SPRITE ) ) := false;
+                    enabled( get_sprite_id_from_handle( ENEMY_SHIP_2_SPRITE ) ) := false;
+                end if;
+            end if;
+        end if;
+        sprites_enabled <= enabled;
+    end process;
+
+--        PLAYER_SHIP_1_SPRITE,   -- player ship (sprite 1/2)
+--        PLAYER_SHIP_2_SPRITE,   -- player ship (sprite 2/2)
+--        PLAYER_SHOT_SPRITE,     -- shot fired from player ship
+--        ENEMY_SHIP_1_SPRITE,    -- enemy ship (sprite 1/2)
+--        ENEMY_SHIP_2_SPRITE,    -- enemy ship (sprite 2/2)
+--        ALIEN_SHIP_1_SPRITE,    -- alien ship sprite
+--        ALIEN_SHIP_2_SPRITE,    -- alien ship sprite
+--        ALIEN_SHIP_3_SPRITE     -- alien ship sprite
+--
+--        PLAYER_SHOT_ENEMY_1_COLLISION,
+--        PLAYER_1_ALIEN_1_COLLISION,
+--        PLAYER_2_ALIEN_1_COLLISION,
+--        PLAYER_1_ENEMY_1_COLLISION,
+--        PLAYER_2_ENEMY_1_COLLISION
+
+--    update_sprites_enabled: process (clock, reset) begin
+--        if reset then
+--            sprites_enabled_signal <= (others => true);
+--        elsif rising_edge(clock) then
+----            if sprite_collisions then
+----                sprites_enabled_signal(1) <= false;
+----                sprites_enabled_signal(4) <= false;
+----            end if;
+----            if enemy_ship_collision_2 then
+----                sprites_enabled_signal(3) <= false;
+----                sprites_enabled_signal(5) <= false;
+----            end if;
+--            if game_state_signal = GS_PLAY then
+--                if enemy_ship_collision_1 then
+--                    sprites_enabled_signal(1) <= false;
+--                    sprites_enabled_signal(4) <= false;
+--                end if;
+--                if enemy_ship_collision_2 then
+--                    sprites_enabled_signal(3) <= false;
+--                    sprites_enabled_signal(5) <= false;
+--                end if;
+--            end if;
+--        end if;
+----        sprites_enabled <= sprites_enabled_signal;
+--    end process;
+
+--sprites_enabled <= sprites_enabled_signal;
+
     ----------------------------------------------------------------------------
     -- Section 4) Update game state. This game has a very simple state logic:
     -- RESET --> PLAY --> GAME_WON or GAME_OVER
@@ -123,18 +200,18 @@ begin
     game_over <= enemy_ship_collision_1 or enemy_ship_collision_2;
     process (clock, reset) begin
         if reset then
-            game_logic_state <= GS_RESET;
+            game_state_signal <= GS_RESET;
         elsif rising_edge(clock) then
-            case game_logic_state is
+            case game_state_signal is
                 when GS_RESET =>
                     if input_buttons /= (others => '0') then
-                        game_logic_state <= GS_PLAY;
+                        game_state_signal <= GS_PLAY;
                     end if;
                 when GS_PLAY =>
                     if game_won then
-                        game_logic_state <= GS_GAME_WON;
+                        game_state_signal <= GS_GAME_WON;
                     elsif game_over then
-                        game_logic_state <= GS_GAME_OVER;
+                        game_state_signal <= GS_GAME_OVER;
                     end if;
                 when others =>
                     null;
@@ -142,14 +219,17 @@ begin
         end if;
     end process;
 
-    game_state <= game_logic_state;
+    game_state <= game_state_signal;
 
-    debug_bits(0) <= '1' when enemy_ship_collision_2 else '0';
-    debug_bits(1) <= '1' when enemy_ship_collision_1 else '0';
-    debug_bits(2) <= '1';-- when death_by_oryx else '0';
-    debug_bits(3) <= '1' when game_logic_state = GS_RESET else '0';
-    debug_bits(4) <= '1' when game_logic_state = GS_PLAY else '0';
-    debug_bits(5) <= '1' when game_logic_state = GS_GAME_OVER else '0';
-    debug_bits(6) <= '1' when game_logic_state = GS_GAME_WON else '0';
-    debug_bits(7) <= '0';
+--    debug_bits(7 downto 0) <= std_logic_vector_from_bool_vector(sprite_collisions);
+    debug_bits(7 downto 0) <= std_logic_vector_from_bool_vector(sprites_enabled_signal)(0 to 7);
+
+--    debug_bits(0) <= '1' when enemy_ship_collision_2 else '0';
+--    debug_bits(1) <= '1' when enemy_ship_collision_1 else '0';
+--    debug_bits(2) <= '1';-- when death_by_oryx else '0';
+--    debug_bits(3) <= '1' when game_logic_state = GS_RESET else '0';
+--    debug_bits(4) <= '1' when game_logic_state = GS_PLAY else '0';
+--    debug_bits(5) <= '1' when game_logic_state = GS_GAME_OVER else '0';
+--    debug_bits(6) <= '1' when game_logic_state = GS_GAME_WON else '0';
+--    debug_bits(7) <= '0';
 end;

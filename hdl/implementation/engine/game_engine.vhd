@@ -29,6 +29,7 @@ entity game_engine is
         reset: in std_logic;
 
         sprites_coordinates: in point_array_type(SPRITES_INITIAL_VALUES'range);
+        sprites_enabled: in bool_vector;
         sprite_collisions_results: out bool_vector;
 
         elapsed_time: out integer range 0 to 1000;
@@ -63,6 +64,8 @@ begin
             vga_clock_in => vga_clock_in,
             vga_signals => vga_signals,
             sprites_coordinates => sprites_coordinates,
+            sprites_enabled => sprites_enabled,
+--            sprites_enabled => (others => false),
             sprite_collisions_results => sprite_collisions_results,
             background_bitmap => background_bitmap
          );

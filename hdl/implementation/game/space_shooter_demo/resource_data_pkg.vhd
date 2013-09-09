@@ -19,14 +19,14 @@ package resource_data_pkg is
     );
 
     constant GAME_COLLISIONS: sprite_collision_init_array_type := (
-        (   PLAYER_1_ALIEN_1_COLLISION,
-            sprite_1 => PLAYER_SHIP_1_SPRITE,
-            sprite_2 => ALIEN_SHIP_1_SPRITE
-        ),
-        (   PLAYER_2_ALIEN_1_COLLISION,
-            sprite_1 => PLAYER_SHIP_2_SPRITE,
-            sprite_2 => ALIEN_SHIP_1_SPRITE
-        )
+        ( PLAYER_SHOT_ALIEN_1_COLLISION,    PLAYER_SHOT_SPRITE,     ALIEN_SHIP_1_SPRITE ),
+        ( PLAYER_SHOT_ALIEN_2_COLLISION,    PLAYER_SHOT_SPRITE,     ALIEN_SHIP_2_SPRITE ),
+        ( PLAYER_SHOT_ALIEN_3_COLLISION,    PLAYER_SHOT_SPRITE,     ALIEN_SHIP_3_SPRITE ),
+        ( PLAYER_SHOT_ENEMY_1_COLLISION,    PLAYER_SHOT_SPRITE,     ENEMY_SHIP_1_SPRITE ),
+        ( PLAYER_1_ALIEN_1_COLLISION,       PLAYER_SHIP_1_SPRITE,   ALIEN_SHIP_1_SPRITE ),
+        ( PLAYER_2_ALIEN_1_COLLISION,       PLAYER_SHIP_2_SPRITE,   ALIEN_SHIP_1_SPRITE ),
+        ( PLAYER_1_ENEMY_1_COLLISION,       PLAYER_SHIP_1_SPRITE,   ENEMY_SHIP_1_SPRITE ),
+        ( PLAYER_2_ENEMY_1_COLLISION,       PLAYER_SHIP_2_SPRITE,   ENEMY_SHIP_2_SPRITE )
     );
 
     -- Define the Non-Player Characters (NPCs) used in the game. NPCs have
