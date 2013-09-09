@@ -2,3 +2,6 @@
 /quartus/incremental_db
 /quartus/output_files
 /src/transcript
+/synth/quartus/db
+/synth/quartus/output_files
+/synth/quartus/incremental_db/compiled_partitions

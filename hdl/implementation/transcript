@@ -1,0 +1,30 @@
+# vsim -do {run -all; quit} -lib /temp/work -c sprites_engine_tb(testbench) 
+# Loading std.standard
+# Loading std.textio(body)
+# Loading ieee.std_logic_1164(body)
+# Loading ieee.numeric_std(body)
+# Loading /temp/work.colors_pkg(body)
+# Loading /temp/work.graphics_types_pkg(body)
+# Loading /temp/work.sprites_pkg(body)
+# Loading std.env(body)
+# Loading /temp/work.sprites_engine_tb(testbench)
+# Loading /temp/work.sprites_engine(rtl)
+# run -all 
+# ** Note: starting...
+#    Time: 0 ps  Iteration: 0  Instance: /sprites_engine_tb
+#  0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+#  0 0 1 1 1 1 1 1 1 1 0 0 0 0 0 0
+#  0 0 1 2 2 2 0 0 0 1 0 0 0 0 0 0
+#  0 0 1 2 2 2 0 0 0 1 0 0 0 0 0 0
+#  0 0 1 2 2 2 0 0 0 1 0 0 0 0 0 0
+#  0 0 1 0 0 0 1 1 1 1 1 1 1 1 0 0
+#  0 0 1 0 0 0 1 0 0 1 0 0 0 1 0 0
+#  0 0 1 0 0 0 1 0 0 1 0 0 2 1 0 0
+#  0 0 1 1 1 1 1 1 1 1 0 2 2 1 0 0
+#  0 0 0 0 0 0 1 0 0 2 2 2 2 1 0 0
+#  0 0 0 0 0 0 1 0 2 2 2 2 2 1 0 0
+#  0 0 0 0 0 0 1 2 2 2 2 2 2 1 0 0
+#  0 0 0 0 0 0 1 1 1 1 1 1 1 1 0 0
+#  0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+#  0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+#  0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
