@@ -10,7 +10,8 @@ package resource_data_helper_pkg is
     function get_bitmap_from_handle(handle: bitmap_handle_type) return paletted_bitmap_type;
     function make_sprites_initial_values(sprite_init_array: sprite_init_array_type) return sprites_array_type;
     function make_sprite_positions(pairs: sprite_positions_init_array) return point_array_type;
-    function make_sprites_collision_query(sprite_handle_pairs: sprite_collision_query_initialization_type) return sprite_collision_query_type;
+--    function make_sprites_collision_query(sprite_handle_pairs: sprite_collision_query_initialization_type) return sprite_collision_query_type;
+    function make_sprites_collision_query(collisions: sprite_collision_init_array_type) return sprite_collision_query_type;
 
 end;
 
@@ -44,13 +45,25 @@ package body resource_data_helper_pkg is
         return sprites;
     end;
 
-    function make_sprites_collision_query(sprite_handle_pairs: sprite_collision_query_initialization_type) return sprite_collision_query_type is
-        variable query: sprite_collision_query_type(sprite_handle_pairs'range);
+--    function make_sprites_collision_query(sprite_handle_pairs: sprite_collision_query_initialization_type) return sprite_collision_query_type is
+--        variable query: sprite_collision_query_type(sprite_handle_pairs'range);
+--    begin
+--        for i in query'range loop
+--            query(i) := (
+--                get_sprite_id_from_handle( sprite_handle_pairs(i)(0) ),
+--                get_sprite_id_from_handle( sprite_handle_pairs(i)(1) )
+--            );
+--        end loop;
+--        return query;
+--    end;
+
+    function make_sprites_collision_query(collisions: sprite_collision_init_array_type) return sprite_collision_query_type is
+        variable query: sprite_collision_query_type(collisions'range);
     begin
         for i in query'range loop
             query(i) := (
-                get_sprite_id_from_handle( sprite_handle_pairs(i)(0) ),
-                get_sprite_id_from_handle( sprite_handle_pairs(i)(1) )
+                get_sprite_id_from_handle( collisions(i).sprite_1 ),
+                get_sprite_id_from_handle( collisions(i).sprite_2 )
             );
         end loop;
         return query;

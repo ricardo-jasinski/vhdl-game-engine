@@ -4,6 +4,7 @@ use work.basic_types_pkg.all;
 use work.input_types_pkg.all;
 use work.graphics_types_pkg.all;
 use work.sprites_pkg.all;
+--use work.sprites_collision_pkg.all;
 use work.game_state_pkg.all;
 use work.resource_handles_pkg.all;
 use work.resource_data_pkg.all;
@@ -11,7 +12,7 @@ use work.resource_data_helper_pkg.all;
 use work.npc_pkg.all;
 use work.vga_pkg.all;
 
--- Top-level entity for the "Adventure" game demo using VAGE. On top of this
+-- Top-level entity for the "Space shooter" game demo using VAGE. On top of this
 -- entity, there should be only a very simple wrapper intantiating this entity
 -- and connecting its ports to the board used. It should be fairly easy to use
 -- this entity in other hardware platforms, without any modifications.
@@ -68,25 +69,24 @@ architecture rtl of space_shooter_demo_top is
     -- the game logic module and used as an input by the sprites engine
     signal sprite_positions: point_array_type(GAME_SPRITES'range);
 
-    -- We need to tell the sprites engine which sprites we want to monitor for
-    -- collisions. The query array helps us do it neatly.
-    constant SPRITES_COLLISION_QUERY: sprite_collision_query_type := make_sprites_collision_query((
-        (PLAYER_SHIP_1_SPRITE, ENEMY_SHIP_SPRITE),
-        (PLAYER_SHIP_2_SPRITE, ENEMY_SHIP_SPRITE)
---        (SORCERER_SPRITE, GHOST_SPRITE),
---        (SORCERER_SPRITE, SCORPION_SPRITE),
---        (SORCERER_SPRITE, ORYX_11_SPRITE),
---        (SORCERER_SPRITE, CHEST_SPRITE)
-    ));
+----    -- We need to tell the sprites engine which sprites we want to monitor for
+----    -- collisions. The query array helps us do it neatly.
+--    signal sprites_collision_query: sprite_collision_query_type;
+----    constant SPRITES_COLLISION_QUERY: sprite_collision_query_type := make_sprites_collision_query((
+----        (PLAYER_SHIP_1_SPRITE, ALIEN_SHIP_1_SPRITE),
+----        (PLAYER_SHIP_2_SPRITE, ALIEN_SHIP_1_SPRITE)
+----    ));
 
     -- Each element is 'true' while the two corresponding sprites are colliding.
-    signal sprite_collisions: bool_vector(SPRITES_COLLISION_QUERY'range);
+--    signal sprite_collisions: bool_vector(SPRITE_COLLISION_QUERY'range);
+    signal sprite_collisions: bool_vector(GAME_COLLISIONS'range);
+--    signal sprite_collisions: bool_vector;
 
     -- We need to initialize the sprites engine with the game sprites. This
     -- initialization array helps us do it neatly. The helper function will
     -- fetch user-provided data from the GAME_SPRITES array and return an
     -- array of sprites ready to be assigned to sprite engine upon reset.
-    constant SPRITES_INITIAL_VALUES: sprites_array_type := make_sprites_initial_values(GAME_SPRITES);
+--    constant SPRITES_INITIAL_VALUES: sprites_array_type := make_sprites_initial_values(GAME_SPRITES);
 
     -- Background image to be used by the video engine; currently, the game
     -- logic is responsible for providing the video engine with background tile
@@ -96,37 +96,30 @@ architecture rtl of space_shooter_demo_top is
     -- their positions updated automatically; the user logic is responsible for
     -- reading their positions and assigning them to the corresponding sprites
     constant NPCS: npc_array_type := (
-        -- Ghost, moves around the chest in a diamond-shaped path
+        -- Player shot
         make_npc_bouncer(
-            initial_position => (144, 64),
-            allowed_region => (128, 64, 160, 96),
-            initial_speed => (1, 1)
+            initial_position => (48, 152),
+            initial_speed => (2, 0)
         ),
-        -- Scorpion, moves horizontally accross the screen
-        make_npc_bouncer(
-            initial_position => (0, 128),
-            initial_speed => (1, 0)
-        ),
-        -- Bat, moves horizontally
-        make_npc_bouncer(
-            initial_position => (160, 160),
-            allowed_region => (0, 160, 300, 164),
-            initial_speed => (1, 1)
-        ),
-        -- Oryx, tries to kill the player with its sword
-        make_npc_follower(
-            initial_position => (300, 220),
-            slowdown_factor => 2
-        ),
-        -- Archer, tries to hide behind the player
-        make_npc_follower(
-            initial_position => (0, 0),
-            slowdown_factor => 1
-        ),
-        -- Reaper, stays near the player
+        -- Enemy ship 1
         make_npc_follower(
             initial_position => (300, 64),
-            slowdown_factor => 4
+            absolute_speed => 2
+        ),
+        -- Alien ship 1
+        make_npc_bouncer(
+            initial_position => (400, 100),
+            initial_speed => (1, 2)
+        ),
+        -- Alien ship 2
+        make_npc_bouncer(
+            initial_position => (410, 120),
+            initial_speed => (1, 2)
+        ),
+        -- Alien ship 3
+        make_npc_bouncer(
+            initial_position => (420, 140),
+            initial_speed => (1, 2)
         )
     );
 
@@ -195,8 +188,10 @@ begin
 
     engine: entity work.game_engine
         generic map (
-            SPRITES_INITIAL_VALUES => SPRITES_INITIAL_VALUES,
-            SPRITES_COLLISION_QUERY => SPRITES_COLLISION_QUERY
+--            SPRITES_INITIAL_VALUES => SPRITES_INITIAL_VALUES,
+--            SPRITES_COLLISION_QUERY => SPRITE_COLLISION_QUERY
+            SPRITES_INITIAL_VALUES => make_sprites_initial_values(GAME_SPRITES),
+            SPRITES_COLLISION_QUERY => make_sprites_collision_query(GAME_COLLISIONS)
         ) port map (
             clock_50MHz => clock_50_Mhz,
             reset => reset,

@@ -34,6 +34,13 @@ package resource_handles_helper_pkg is
     end record;
     type sprite_init_array_type is array (natural range<>) of sprite_init_type;
 
+    type sprite_collision_init_type is record
+        collision_handle: sprite_collision_handle_type;
+        sprite_1: sprite_handle_type;
+        sprite_2: sprite_handle_type;
+    end record;
+    type sprite_collision_init_array_type is array (natural range<>) of sprite_collision_init_type;
+
 end;
 
 package body resource_handles_helper_pkg is
