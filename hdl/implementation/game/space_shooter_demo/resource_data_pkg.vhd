@@ -2,6 +2,7 @@ use work.sprites_pkg.all;
 use work.graphics_types_pkg.all;
 use work.resource_handles_pkg.all;
 use work.resource_handles_helper_pkg.all;
+use work.npc_pkg.all;
 
 package resource_data_pkg is
 
@@ -18,15 +19,53 @@ package resource_data_pkg is
     );
 
     constant GAME_COLLISIONS: sprite_collision_init_array_type := (
-        (PLAYER_1_ALIEN_1_COLLISION,
+        (   PLAYER_1_ALIEN_1_COLLISION,
             sprite_1 => PLAYER_SHIP_1_SPRITE,
             sprite_2 => ALIEN_SHIP_1_SPRITE
         ),
-        (PLAYER_2_ALIEN_1_COLLISION,
+        (   PLAYER_2_ALIEN_1_COLLISION,
             sprite_1 => PLAYER_SHIP_2_SPRITE,
             sprite_2 => ALIEN_SHIP_1_SPRITE
         )
     );
+
+
+    -- Define the Non-Player Characters (NPCs) used in the game. The NPCs have
+    -- their positions updated automatically; the user logic is responsible for
+    -- reading their positions and assigning them to the corresponding sprites
+    constant GAME_NPCS: npc_init_array_type := (
+        -- Player shot
+        (   PLAYER_SHOT_NPC,
+            make_npc_bouncer(
+                initial_position => (48, 152),
+                initial_speed => (2, 0)
+        )),
+        -- Enemy ship 1
+        (   ENEMY_SHIP_NPC,
+            make_npc_follower(
+                initial_position => (300, 64),
+                absolute_speed => 2
+        )),
+        -- Alien ship 1
+        (   ALIEN_SHIP_1_NPC,
+            make_npc_bouncer(
+                initial_position => (400, 100),
+                initial_speed => (1, 2)
+        )),
+        -- Alien ship 2
+        (   ALIEN_SHIP_2_NPC,
+            make_npc_bouncer(
+                initial_position => (410, 120),
+                initial_speed => (1, 2)
+        )),
+        -- Alien ship 3
+        (   ALIEN_SHIP_3_NPC,
+            make_npc_bouncer(
+                initial_position => (420, 140),
+                initial_speed => (1, 2)
+        ))
+    );
+
 
     -- Here we define the actual bitmaps for each sprite in the game. This is
     -- the second step to add a new sprite in the game.

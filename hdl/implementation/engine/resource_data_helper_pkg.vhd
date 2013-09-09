@@ -1,6 +1,7 @@
 use work.resource_handles_pkg.all;
 use work.graphics_types_pkg.all;
 use work.sprites_pkg.all;
+use work.npc_pkg.all;
 use work.resource_data_pkg.all;
 use work.resource_handles_helper_pkg.all;
 
@@ -10,8 +11,8 @@ package resource_data_helper_pkg is
     function get_bitmap_from_handle(handle: bitmap_handle_type) return paletted_bitmap_type;
     function make_sprites_initial_values(sprite_init_array: sprite_init_array_type) return sprites_array_type;
     function make_sprite_positions(pairs: sprite_positions_init_array) return point_array_type;
---    function make_sprites_collision_query(sprite_handle_pairs: sprite_collision_query_initialization_type) return sprite_collision_query_type;
     function make_sprites_collision_query(collisions: sprite_collision_init_array_type) return sprite_collision_query_type;
+    function make_npcs_initial_values(npcs_init_array: npc_init_array_type) return npc_array_type;
 
 end;
 
@@ -67,6 +68,15 @@ package body resource_data_helper_pkg is
             );
         end loop;
         return query;
+    end;
+
+    function make_npcs_initial_values(npcs_init_array: npc_init_array_type) return npc_array_type is
+        variable npcs: npc_array_type(npcs_init_array'range);
+    begin
+        for i in npcs'range loop
+            npcs(i) := npcs_init_array(i).npc;
+        end loop;
+        return npcs;
     end;
 
     function make_sprite_positions(pairs: sprite_positions_init_array) return point_array_type is

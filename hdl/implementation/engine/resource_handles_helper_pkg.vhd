@@ -1,6 +1,7 @@
 use work.graphics_types_pkg.all;
 use work.sprites_pkg.all;
 use work.resource_handles_pkg.all;
+use work.npc_pkg.all;
 
 package resource_handles_helper_pkg is
 
@@ -40,6 +41,12 @@ package resource_handles_helper_pkg is
         sprite_2: sprite_handle_type;
     end record;
     type sprite_collision_init_array_type is array (natural range<>) of sprite_collision_init_type;
+
+    type npc_init_type is record
+        npc_handle: npc_handle_type;
+        npc: npc_type;
+    end record;
+    type npc_init_array_type is array (natural range<>) of npc_init_type;
 
 end;
 

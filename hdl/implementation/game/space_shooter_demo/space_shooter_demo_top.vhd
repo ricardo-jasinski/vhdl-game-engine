@@ -92,44 +92,44 @@ architecture rtl of space_shooter_demo_top is
     -- logic is responsible for providing the video engine with background tile
     signal background_bitmap: paletted_bitmap_type(0 to 7, 0 to 7);
 
-    -- Define the Non-Player Characters (NPCs) used in the game. The NPCs have
-    -- their positions updated automatically; the user logic is responsible for
-    -- reading their positions and assigning them to the corresponding sprites
-    constant NPCS: npc_array_type := (
-        -- Player shot
-        make_npc_bouncer(
-            initial_position => (48, 152),
-            initial_speed => (2, 0)
-        ),
-        -- Enemy ship 1
-        make_npc_follower(
-            initial_position => (300, 64),
-            absolute_speed => 2
-        ),
-        -- Alien ship 1
-        make_npc_bouncer(
-            initial_position => (400, 100),
-            initial_speed => (1, 2)
-        ),
-        -- Alien ship 2
-        make_npc_bouncer(
-            initial_position => (410, 120),
-            initial_speed => (1, 2)
-        ),
-        -- Alien ship 3
-        make_npc_bouncer(
-            initial_position => (420, 140),
-            initial_speed => (1, 2)
-        )
-    );
+--    -- Define the Non-Player Characters (NPCs) used in the game. The NPCs have
+--    -- their positions updated automatically; the user logic is responsible for
+--    -- reading their positions and assigning them to the corresponding sprites
+--    constant NPCS: npc_array_type := (
+--        -- Player shot
+--        make_npc_bouncer(
+--            initial_position => (48, 152),
+--            initial_speed => (2, 0)
+--        ),
+--        -- Enemy ship 1
+--        make_npc_follower(
+--            initial_position => (300, 64),
+--            absolute_speed => 2
+--        ),
+--        -- Alien ship 1
+--        make_npc_bouncer(
+--            initial_position => (400, 100),
+--            initial_speed => (1, 2)
+--        ),
+--        -- Alien ship 2
+--        make_npc_bouncer(
+--            initial_position => (410, 120),
+--            initial_speed => (1, 2)
+--        ),
+--        -- Alien ship 3
+--        make_npc_bouncer(
+--            initial_position => (420, 140),
+--            initial_speed => (1, 2)
+--        )
+--    );
 
     -- User logic must inform the NPC engine what are the target positions
     -- for the NPCs; some types of AI (e.g., AI_FOLLOWER) use this value to
     -- calculate their next position
-    signal npc_target_positions: point_array_type(NPCS'range);
+    signal npc_target_positions: point_array_type(GAME_NPCS'range);
     -- The game engine (NPC engine, actually) calculates the NPC positions
     -- and these values are handed over to the game logic
-    signal npc_positions: point_array_type(NPCS'range);
+    signal npc_positions: point_array_type(GAME_NPCS'range);
 
     signal in_buttons: input_buttons_type;
     signal game_state: game_state_type;
@@ -171,7 +171,7 @@ begin
 
     npc: entity work.npcs_engine
         generic map (
-            NPC_DEFINITIONS => NPCS
+            NPC_DEFINITIONS => make_npcs_initial_values(GAME_NPCS)
         ) port map (
             clock => clock_50_Mhz,
             reset => reset,
@@ -188,8 +188,6 @@ begin
 
     engine: entity work.game_engine
         generic map (
---            SPRITES_INITIAL_VALUES => SPRITES_INITIAL_VALUES,
---            SPRITES_COLLISION_QUERY => SPRITE_COLLISION_QUERY
             SPRITES_INITIAL_VALUES => make_sprites_initial_values(GAME_SPRITES),
             SPRITES_COLLISION_QUERY => make_sprites_collision_query(GAME_COLLISIONS)
         ) port map (
