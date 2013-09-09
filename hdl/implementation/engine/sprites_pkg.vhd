@@ -25,7 +25,10 @@ package sprites_pkg is
     function update_sprite(sprite: sprite_type; raster_position: point_type; position: point_type) return sprite_type;
     function get_sprite_pixel(sprite: sprite_type; raster_position: point_type) return palette_color_type;
 
+    -- A pair of sprites; used to define elements in the collision query array.
     type sprite_id_pair is array (0 to 1) of integer;
+    -- We need to tell the sprites engine which sprites we want to monitor for
+    -- collisions. The query array helps us do it neatly.
     type sprite_collision_query_type is array (natural range <>) of sprite_id_pair;
 
     function check_collision(sprite_1, sprite_2: sprite_type) return boolean;

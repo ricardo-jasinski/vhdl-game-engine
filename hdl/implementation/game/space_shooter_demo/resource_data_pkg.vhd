@@ -8,14 +8,14 @@ package resource_data_pkg is
 
     -- Here we define all the sprites used in the game
     constant GAME_SPRITES: sprite_init_array_type := (
-        (PLAYER_SHIP_1_SPRITE, bitmap_handle => PLAYER_SHIP_1_BITMAP),
-        (PLAYER_SHIP_2_SPRITE, bitmap_handle => PLAYER_SHIP_2_BITMAP),
+        (PLAYER_SHIP_1_SPRITE,  bitmap_handle => PLAYER_SHIP_1_BITMAP),
+        (PLAYER_SHIP_2_SPRITE,  bitmap_handle => PLAYER_SHIP_2_BITMAP),
         (PLAYER_SHOT_SPRITE,    bitmap_handle => PLAYER_SHOT_BITMAP),
-        (ENEMY_SHIP_1_SPRITE, bitmap_handle => ENEMY_SHIP_1_BITMAP),
-        (ENEMY_SHIP_2_SPRITE,    bitmap_handle => ENEMY_SHIP_2_BITMAP),
-        (ALIEN_SHIP_1_SPRITE,    bitmap_handle => ALIEN_SHIP_BITMAP),
-        (ALIEN_SHIP_2_SPRITE,    bitmap_handle => ALIEN_SHIP_BITMAP),
-        (ALIEN_SHIP_3_SPRITE,    bitmap_handle => ALIEN_SHIP_BITMAP)
+        (ENEMY_SHIP_1_SPRITE,   bitmap_handle => ENEMY_SHIP_1_BITMAP),
+        (ENEMY_SHIP_2_SPRITE,   bitmap_handle => ENEMY_SHIP_2_BITMAP),
+        (ALIEN_SHIP_1_SPRITE,   bitmap_handle => ALIEN_SHIP_BITMAP),
+        (ALIEN_SHIP_2_SPRITE,   bitmap_handle => ALIEN_SHIP_BITMAP),
+        (ALIEN_SHIP_3_SPRITE,   bitmap_handle => ALIEN_SHIP_BITMAP)
     );
 
     constant GAME_COLLISIONS: sprite_collision_init_array_type := (
@@ -29,8 +29,7 @@ package resource_data_pkg is
         )
     );
 
-
-    -- Define the Non-Player Characters (NPCs) used in the game. The NPCs have
+    -- Define the Non-Player Characters (NPCs) used in the game. NPCs have
     -- their positions updated automatically; the user logic is responsible for
     -- reading their positions and assigning them to the corresponding sprites
     constant GAME_NPCS: npc_init_array_type := (
@@ -38,27 +37,28 @@ package resource_data_pkg is
         (   PLAYER_SHOT_NPC,
             make_npc_bouncer(
                 initial_position => (48, 152),
-                initial_speed => (2, 0)
+                initial_speed => (4, 0)
         )),
         -- Enemy ship 1
         (   ENEMY_SHIP_NPC,
-            make_npc_follower(
-                initial_position => (300, 64),
-                absolute_speed => 2
+            make_npc_bouncer(
+                initial_position => (200, 60),
+                allowed_region => (200, 60, 300, 180),
+                initial_speed => (2, 2)
         )),
-        -- Alien ship 1
+        -- Alien ship #1
         (   ALIEN_SHIP_1_NPC,
             make_npc_bouncer(
                 initial_position => (400, 100),
                 initial_speed => (1, 2)
         )),
-        -- Alien ship 2
+        -- Alien ship #2
         (   ALIEN_SHIP_2_NPC,
             make_npc_bouncer(
                 initial_position => (410, 120),
                 initial_speed => (1, 2)
         )),
-        -- Alien ship 3
+        -- Alien ship #3
         (   ALIEN_SHIP_3_NPC,
             make_npc_bouncer(
                 initial_position => (420, 140),

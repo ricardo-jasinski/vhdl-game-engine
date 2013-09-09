@@ -1,11 +1,11 @@
 library ieee;
 use ieee.std_logic_1164.all;
 
--- VAGE (VHDL Advanced Game Engine) demo using the 'Adventure' game demo and
--- the Altera DE2 board as a hardware platform. The purpose of this file is
--- simply to instantiate the game top entity. It should not contain any game-
--- related code. This is also a perfect place for vendor-specific and board-
--- specific code, such as PLLs.
+-- VAGE (VHDL Advanced Game Engine) demo using the 'Space SHooter' game demo
+-- and the Altera DE2 board as a hardware platform. The purpose of this file
+-- is simply to instantiate the game top entity. It should not contain any -
+-- gamerelated code. This is also a perfect place for vendor-specific and
+-- board-specific code, such as PLLs.
 entity de2_adventure_demo_top is
     -- Port names as defined in the standard DE2 settings file.
     port (
@@ -43,6 +43,7 @@ architecture rtl of de2_adventure_demo_top is
 
 begin
 
+    -- Instantiate the game top entity
     game: entity work.space_shooter_demo_top
         port map(
             clock_50_Mhz  => clock_50,
@@ -61,8 +62,8 @@ begin
             input_buttons  => not key
         );
 
-    -- PLL below is used to generate the pixel clock frequency
-    -- Uses DE2 50Mhz clock for PLL's input clock
+    -- Instantiate a PLL to generate the pixel clock frequency (~25 MHZ),
+    -- using the DE2 50Mhz clock as input
     video_PLL_inst : video_PLL port map (
         inclk0 => clock_50,
         c0 => vga_pll_clock_out

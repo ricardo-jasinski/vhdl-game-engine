@@ -25,6 +25,8 @@ package body resource_data_helper_pkg is
         return bitmap_init_value.bitmap;
     end;
 
+    -- Merges all information provided by the user with the aditional information
+    -- required to create a sprite
     function sprite_initial_value_from_id(sprite_id: natural) return sprite_type is
         variable bitmap: paletted_bitmap_type(0 to BITMAP_WIDTH-1, 0 to BITMAP_HEIGHT-1);
         variable bitmap_handle: bitmap_handle_type;
@@ -35,8 +37,10 @@ package body resource_data_helper_pkg is
         return (bitmap => bitmap, others => 0);
     end;
 
-    -- Merges all information provided by the user with the aditional information
-    -- required to create a sprite
+    -- We need to initialize the sprites engine with the game sprites. This
+    -- initialization array helps us do it neatly. The helper function will
+    -- fetch user-provided data from the GAME_SPRITES array and return an
+    -- array of sprites ready to be assigned to sprite engine upon reset.
     function make_sprites_initial_values(sprite_init_array: sprite_init_array_type) return sprites_array_type is
         variable sprites: sprites_array_type(sprite_init_array'range);
     begin
@@ -45,18 +49,6 @@ package body resource_data_helper_pkg is
         end loop;
         return sprites;
     end;
-
---    function make_sprites_collision_query(sprite_handle_pairs: sprite_collision_query_initialization_type) return sprite_collision_query_type is
---        variable query: sprite_collision_query_type(sprite_handle_pairs'range);
---    begin
---        for i in query'range loop
---            query(i) := (
---                get_sprite_id_from_handle( sprite_handle_pairs(i)(0) ),
---                get_sprite_id_from_handle( sprite_handle_pairs(i)(1) )
---            );
---        end loop;
---        return query;
---    end;
 
     function make_sprites_collision_query(collisions: sprite_collision_init_array_type) return sprite_collision_query_type is
         variable query: sprite_collision_query_type(collisions'range);

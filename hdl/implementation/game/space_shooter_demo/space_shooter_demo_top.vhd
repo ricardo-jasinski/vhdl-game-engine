@@ -4,12 +4,10 @@ use work.basic_types_pkg.all;
 use work.input_types_pkg.all;
 use work.graphics_types_pkg.all;
 use work.sprites_pkg.all;
---use work.sprites_collision_pkg.all;
 use work.game_state_pkg.all;
 use work.resource_handles_pkg.all;
 use work.resource_data_pkg.all;
 use work.resource_data_helper_pkg.all;
-use work.npc_pkg.all;
 use work.vga_pkg.all;
 
 -- Top-level entity for the "Space shooter" game demo using VAGE. On top of this
@@ -56,8 +54,10 @@ architecture rtl of space_shooter_demo_top is
     -- Medium-resolution time base (used for game state updates and
     -- reading the inputs switches)
     signal time_base_50_ms: std_logic;
+
     -- Maximum value for the game time counter
     constant GAME_TIMER_50_MS_MAX: integer := 1000;
+
     -- Monotonic game time counter, updated every 50 ms. Can be used by
     -- the game logic (eg., to animate or move sprites)
     signal elapsed_time: integer range 0 to GAME_TIMER_50_MS_MAX;
@@ -69,64 +69,19 @@ architecture rtl of space_shooter_demo_top is
     -- the game logic module and used as an input by the sprites engine
     signal sprite_positions: point_array_type(GAME_SPRITES'range);
 
-----    -- We need to tell the sprites engine which sprites we want to monitor for
-----    -- collisions. The query array helps us do it neatly.
---    signal sprites_collision_query: sprite_collision_query_type;
-----    constant SPRITES_COLLISION_QUERY: sprite_collision_query_type := make_sprites_collision_query((
-----        (PLAYER_SHIP_1_SPRITE, ALIEN_SHIP_1_SPRITE),
-----        (PLAYER_SHIP_2_SPRITE, ALIEN_SHIP_1_SPRITE)
-----    ));
-
-    -- Each element is 'true' while the two corresponding sprites are colliding.
---    signal sprite_collisions: bool_vector(SPRITE_COLLISION_QUERY'range);
+    -- Each element is 'true' while the two corresponding sprites are colliding;
+    -- values are calculated by the game engine and used by game logic
     signal sprite_collisions: bool_vector(GAME_COLLISIONS'range);
---    signal sprite_collisions: bool_vector;
-
-    -- We need to initialize the sprites engine with the game sprites. This
-    -- initialization array helps us do it neatly. The helper function will
-    -- fetch user-provided data from the GAME_SPRITES array and return an
-    -- array of sprites ready to be assigned to sprite engine upon reset.
---    constant SPRITES_INITIAL_VALUES: sprites_array_type := make_sprites_initial_values(GAME_SPRITES);
 
     -- Background image to be used by the video engine; currently, the game
     -- logic is responsible for providing the video engine with background tile
     signal background_bitmap: paletted_bitmap_type(0 to 7, 0 to 7);
 
---    -- Define the Non-Player Characters (NPCs) used in the game. The NPCs have
---    -- their positions updated automatically; the user logic is responsible for
---    -- reading their positions and assigning them to the corresponding sprites
---    constant NPCS: npc_array_type := (
---        -- Player shot
---        make_npc_bouncer(
---            initial_position => (48, 152),
---            initial_speed => (2, 0)
---        ),
---        -- Enemy ship 1
---        make_npc_follower(
---            initial_position => (300, 64),
---            absolute_speed => 2
---        ),
---        -- Alien ship 1
---        make_npc_bouncer(
---            initial_position => (400, 100),
---            initial_speed => (1, 2)
---        ),
---        -- Alien ship 2
---        make_npc_bouncer(
---            initial_position => (410, 120),
---            initial_speed => (1, 2)
---        ),
---        -- Alien ship 3
---        make_npc_bouncer(
---            initial_position => (420, 140),
---            initial_speed => (1, 2)
---        )
---    );
-
     -- User logic must inform the NPC engine what are the target positions
     -- for the NPCs; some types of AI (e.g., AI_FOLLOWER) use this value to
     -- calculate their next position
     signal npc_target_positions: point_array_type(GAME_NPCS'range);
+
     -- The game engine (NPC engine, actually) calculates the NPC positions
     -- and these values are handed over to the game logic
     signal npc_positions: point_array_type(GAME_NPCS'range);
@@ -150,7 +105,6 @@ begin
     ----------------------------------------------------------------------------
     -- Section 1) Instantiate the game logic. This entity receives the raw game
     -- data and events, and updates the game state accordingly.
-
     logic: entity work.game_logic
         port map(
             clock => clock_50_Mhz,
@@ -168,7 +122,6 @@ begin
     ----------------------------------------------------------------------------
     -- Section 2) Instantiate the NPC engine. This entity receives low-level
     -- game data, and updates the NPC positions.
-
     npc: entity work.npcs_engine
         generic map (
             NPC_DEFINITIONS => make_npcs_initial_values(GAME_NPCS)
@@ -185,7 +138,6 @@ begin
     -- functions that are more related with the game itself, the game engine
     -- performs basic functions such as calculating sprite collisions and
     -- rendering the video output.
-
     engine: entity work.game_engine
         generic map (
             SPRITES_INITIAL_VALUES => make_sprites_initial_values(GAME_SPRITES),

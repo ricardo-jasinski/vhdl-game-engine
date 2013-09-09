@@ -8,18 +8,27 @@ use work.resource_handles_pkg.all;
 use work.game_state_pkg.all;
 use work.sprites_pkg.all;
 
+-- Define all high-level game behavior.
 entity game_logic is
     port (
-        clock: in std_logic;
+        -- Synchronous reset, used by all user logic
         reset: in std_logic;
+        -- System clock used for all user logic
+        clock: in std_logic;
+        -- Medium-resolution time base for game state updates and input reading
         time_base_50_ms: in std_logic;
+        -- Game logic and game engine cooperate to calculate the NPC positions.
         -- The game logic tells where the NPCs *should be* (their intended positions)
         npc_target_positions: out point_array_type;
-        -- The game engine calculates where the NPCs *are*
+        -- Game logic and game engine cooperate to calculate the NPC positions.
+        -- The game engine calculates where the NPCs *actually are*
         npc_positions: in point_array_type;
+        -- Game logic and game engine cooperate to draw sprites, calculate their
+        -- positions and checking for collisions. The game logic defines where
+        -- the sprites *are drawn* on the screen.
+        sprites_positions: out point_array_type;
         -- Each element is 'true' while the two corresponding sprites are colliding.
         sprite_collisions: in bool_vector;
-        sprites_positions: out point_array_type;
         input_buttons: in input_buttons_type;
         game_state: out game_state_type;
         -- debug pins to help debug game logic (e.g., connecting to board leds)
@@ -111,7 +120,7 @@ begin
     -- Section 4) Update game state. This game has a very simple state logic:
     -- RESET --> PLAY --> GAME_WON or GAME_OVER
     game_won <= false; -- treasure_found;
-    game_over <= enemy_ship_collision_1 or enemy_ship_collision_2; -- or death_by_oryx;
+    game_over <= enemy_ship_collision_1 or enemy_ship_collision_2;
     process (clock, reset) begin
         if reset then
             game_logic_state <= GS_RESET;
