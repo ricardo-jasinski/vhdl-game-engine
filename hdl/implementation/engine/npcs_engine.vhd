@@ -1,5 +1,6 @@
 library ieee;
 use ieee.std_logic_1164.all;
+use work.basic_types_pkg.all;
 use work.npc_pkg.all;
 use work.graphics_types_pkg.all;
 
@@ -11,7 +12,8 @@ entity npcs_engine is
         clock: in std_logic;
         reset: in std_logic;
         time_base: in std_logic;
-        target_positions: in point_array_type;
+        npc_enables: in bool_vector;
+        npc_target_positions: in point_array_type;
         npc_positions: out point_array_type
     );
 end;
@@ -29,7 +31,8 @@ begin
                 initial_position => npcs(i).initial_position,
                 absolute_speed => npcs(i).absolute_speed,
                 slowdown_factor => npcs(i).slowdown_factor,
-                target_position => target_positions(i),
+                enabled => npc_enables(i),
+                target_position => npc_target_positions(i),
                 npc_position => npc_positions(i)
             );
         end generate;
@@ -40,6 +43,18 @@ begin
                 initial_position => npcs(i).initial_position,
                 initial_speed => npcs(i).initial_speed,
                 allowed_region => npcs(i).allowed_region,
+                enabled => npc_enables(i),
+                npc_position => npc_positions(i)
+            );
+        end generate;
+
+        npc_is_projectile: if npcs(i).ai_type = AI_PROJECTILE generate
+            projectile_npc: entity work.npc_ai_projectile port map(
+                reset => reset, clock => clock, time_base => time_base,
+                initial_position => npcs(i).initial_position,
+                initial_speed => npcs(i).initial_speed,
+                allowed_region => npcs(i).allowed_region,
+                enabled => npc_enables(i),
                 npc_position => npc_positions(i)
             );
         end generate;

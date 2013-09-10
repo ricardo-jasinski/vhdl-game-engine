@@ -35,9 +35,10 @@ package resource_data_pkg is
     constant GAME_NPCS: npc_init_array_type := (
         -- Player shot
         (   PLAYER_SHOT_NPC,
-            make_npc_bouncer(
+            make_npc_projectile(
                 initial_position => (48, 152),
-                initial_speed => (4, 0)
+                initial_speed => (4, 0),
+                allowed_region => (0, 0, 328, 240)
         )),
         -- Enemy ship 1
         (   ENEMY_SHIP_NPC,

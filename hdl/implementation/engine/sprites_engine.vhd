@@ -59,7 +59,7 @@ begin
             sprite_pixel <= PC_TRANSPARENT;
             pixel_is_valid := false;
             for i in sprites'range loop
---                if sprite_contains_coordinate(sprites(i), raster_position) then
+                -- if sprite_contains_coordinate(sprites(i), raster_position) then
                 -- only enabled sprites are drawn
                 if sprites(i).enabled and sprite_contains_coordinate(sprites(i), raster_position) then
                     pixel_color := get_sprite_pixel(sprites(i), raster_position);

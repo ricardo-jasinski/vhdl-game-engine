@@ -13,6 +13,8 @@ entity npc_ai_follower is
         reset, clock: in std_logic;
         -- time base pulse, NPC state gets updated when high (tipically every 100 ms)
         time_base: in std_logic;
+        -- true if NPC is active in the game and must be updated
+        enabled: in boolean;
         -- limits for NPC movement
         allowed_region: in rectangle_type;
         -- starting point for the NPC
@@ -53,7 +55,6 @@ begin
         end if;
     end process;
 
---    process (clock, reset) is
     process (clock, reset, initial_position) is
         variable new_position: point_type;
     begin
@@ -61,7 +62,8 @@ begin
             position <= initial_position;
 
         elsif rising_edge(clock) then
-            if scaled_time_base then
+--            if scaled_time_base then
+            if enabled and scaled_time_base = '1' then
                 if position.x < target_position.x then
                     new_position.x := position.x + absolute_speed;
                 elsif position.x > target_position.x then

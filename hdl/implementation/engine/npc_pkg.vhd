@@ -4,7 +4,7 @@ package npc_pkg is
 
     constant NPC_SPEED_MAX: integer := 12;
 
-    type npc_ai_type is (AI_BOUNCER, AI_FOLLOWER);
+    type npc_ai_type is (AI_BOUNCER, AI_FOLLOWER, AI_PROJECTILE);
 
     type npc_type is record
         -- start position for the NPC
@@ -23,6 +23,12 @@ package npc_pkg is
     type npc_array_type is array (natural range <>) of npc_type;
 
     function make_npc_bouncer(
+        initial_position: point_type := (0, 0);
+        initial_speed: point_type := (1, 0);
+        allowed_region: rectangle_type := (0, 0, GAME_VIEWPORT_WIDTH-1, GAME_VIEWPORT_HEIGHT-1)
+    ) return npc_type;
+
+    function make_npc_projectile(
         initial_position: point_type := (0, 0);
         initial_speed: point_type := (1, 0);
         allowed_region: rectangle_type := (0, 0, GAME_VIEWPORT_WIDTH-1, GAME_VIEWPORT_HEIGHT-1)
@@ -52,6 +58,25 @@ package body npc_pkg is
             allowed_region => allowed_region,
             -- some parameters are constant
             ai_type => AI_BOUNCER,
+            -- remaining parameters are unsused, but must have any arbitrary value
+            absolute_speed => 0,
+            slowdown_factor => 0
+        );
+    end;
+
+    function make_npc_projectile(
+        initial_position: point_type := (0, 0);
+        initial_speed: point_type := (1, 0);
+        allowed_region: rectangle_type := (0, 0, GAME_VIEWPORT_WIDTH-1, GAME_VIEWPORT_HEIGHT-1)
+    ) return npc_type is
+    begin
+        return (
+            -- some parameters are copied from the input
+            initial_position => initial_position,
+            initial_speed => initial_speed,
+            allowed_region => allowed_region,
+            -- some parameters are constant
+            ai_type => AI_PROJECTILE,
             -- remaining parameters are unsused, but must have any arbitrary value
             absolute_speed => 0,
             slowdown_factor => 0

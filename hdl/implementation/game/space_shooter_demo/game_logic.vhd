@@ -10,6 +10,18 @@ use work.game_state_pkg.all;
 use work.sprites_pkg.all;
 
 -- Define all high-level game behavior.
+--
+-- Game logic and game engine cooperate to calculate the NPC positions:
+--   - The game logic tells whether each NPC is enabled
+--   - The game logic tells where the NPCs *should be* (their intended positions)
+--   - The game engine calculates where the NPCs *actually are*
+--
+-- Game logic and game engine cooperate to draw sprites, calculate their
+-- positions and checking for collisions:
+--   - The game logic defines where the sprites must be drawn on the screen
+--   - The game logic defines which sprites must be drawn and monitored for collisions
+--   - The game engine draws the sprites and tells if there's been any collision
+
 entity game_logic is
     port (
         -- Synchronous reset, used by all user logic
@@ -18,20 +30,16 @@ entity game_logic is
         clock: in std_logic;
         -- Medium-resolution time base for game state updates and input reading
         time_base_50_ms: in std_logic;
-        -- Game logic and game engine cooperate to calculate the NPC positions.
+        -- The game logic tells whether each NPC is enabled
+        npc_enables: out bool_vector;
         -- The game logic tells where the NPCs *should be* (their intended positions)
         npc_target_positions: out point_array_type;
-        -- Game logic and game engine cooperate to calculate the NPC positions.
         -- The game engine calculates where the NPCs *actually are*
         npc_positions: in point_array_type;
-        -- Game logic and game engine cooperate to draw sprites, calculate their
-        -- positions and checking for collisions. The game logic defines where
-        -- the sprites *are drawn* on the screen.
+        -- The game logic defines where the sprites *must be drawn* on the screen.
         sprites_positions: out point_array_type;
-
-
+        -- True if sprite must be drawn on the screen and monitored for collisions
         sprites_enabled: out bool_vector;
-
         -- Each element is 'true' while the two corresponding sprites are colliding.
         sprite_collisions: in bool_vector;
         input_buttons: in input_buttons_type;
@@ -49,6 +57,8 @@ architecture rtl of game_logic is
     -- signals and update them in the game logic to make them move.
     signal player_position: point_type;
 
+    constant PLAYER_ABSOLUTE_SPEED: integer := 2;
+
     -- Signals to help us keep track of the game state.
     signal game_state_signal: game_state_type;
     signal game_over, game_won: boolean;
@@ -60,58 +70,72 @@ architecture rtl of game_logic is
     alias alien_ship_2_position: point_type is npc_positions(3);
     alias alien_ship_3_position: point_type is npc_positions(4);
 
-    -- Aliases to help us monitor the game state. The player dies when an
-    -- enemy is touched.
-    alias enemy_ship_collision_1: boolean is sprite_collisions(0);
-    alias enemy_ship_collision_2: boolean is sprite_collisions(1);
-
-    signal sprites_enabled_signal: bool_vector(sprites_enabled'range);
-
+    signal player_shot_fired: boolean;
 
 begin
 
     ----------------------------------------------------------------------------
     -- Overall architecture description:
     --   1) Update player position
-    --   2) Update NPC inputs (target positions)
-    --   3) Provide a screen position for each sprite
+    --   2) Generate NPC input data (enables and target positions)
+    --   3) Generate sprite input data (enables and screen position)
     --   4) Update game state
     ----------------------------------------------------------------------------
 
     ----------------------------------------------------------------------------
     -- Section 1: Update player position based on input buttons
+    ----------------------------------------------------------------------------
     update_player_position: process (clock, reset) begin
         if reset then
             player_position <= (64, 152);
         elsif rising_edge(clock) then
             if time_base_50_ms then
                 if input_buttons.right then
-                    player_position.x <= player_position.x + 2;
+                    player_position.x <= player_position.x + PLAYER_ABSOLUTE_SPEED;
                 elsif input_buttons.left then
-                    player_position.x <= player_position.x - 2;
+                    player_position.x <= player_position.x - PLAYER_ABSOLUTE_SPEED;
                 end if;
 
                 if input_buttons.down then
-                    player_position.y <= player_position.y + 2;
+                    player_position.y <= player_position.y + PLAYER_ABSOLUTE_SPEED;
                 elsif input_buttons.up then
-                    player_position.y <= player_position.y - 2;
+                    player_position.y <= player_position.y - PLAYER_ABSOLUTE_SPEED;
                 end if;
             end if;
         end if;
     end process;
 
+    player_shot_state: process (clock, reset) begin
+        if reset then
+            player_shot_fired <= true;
+        elsif rising_edge(clock) then
+            if player_shot_fired then
+                if not is_in_view(npc_positions(get_id(PLAYER_SHOT_NPC))) then
+                    player_shot_fired <= false;
+                end if;
+            else
+                if input_buttons.fire then
+                    player_shot_fired <= true;
+                end if;
+            end if;
+        end if;
+    end process;
+
+
     ----------------------------------------------------------------------------
-    -- Section 2) Update NPC positions.
+    -- Section 2) Update NPC NPC input data (enables and target positions)
+    ----------------------------------------------------------------------------
 
     -- We only need to assign the values correspoding to followers
---    npc_target_positions(3) <= player_position;
---    npc_target_positions(4) <= player_position + (-12,0);
     npc_target_positions(1) <= player_position + (24, -4);
+
+    npc_enables(npc_enables'range) <= (others => true);
 
     ----------------------------------------------------------------------------
     -- Section 3) Provide a screen position for each sprite. For static objects,
     -- we can use constants or hardcoded values. For moving objects and NPCs,
     -- we use signals.
+    ----------------------------------------------------------------------------
 
     sprites_positions <= make_sprite_positions((
         (PLAYER_SHIP_1_SPRITE, player_position),
@@ -132,68 +156,37 @@ begin
             return sprite_collisions( get_collision_id_from_handle( handle ) );
         end;
 
---        function collision(collisions: bool_vector; handle: sprite_collision_handle_type) return boolean is begin
---            return collisions( get_collision_id_from_handle( PLAYER_SHOT_ALIEN_1_COLLISION ) );
---        end;
-
---        procedure disable_sprite(handle: sprite_handle_type) is begin
---            enabled( get_sprite_id_from_handle( handle ) ) := false;
---        end procedure;
-
-        function disable_sprite(enabled: bool_vector; handle: sprite_handle_type) return bool_vector is
-            variable return_values: bool_vector(enabled'range);
-        begin
-            --enabled( get_sprite_id_from_handle( handle ) ) := false;
-            return_values := enabled;
-            return_values( get_sprite_id_from_handle( handle ) ) := false;
-            return return_values;
-        end;
+        procedure disable_sprite(enabled: inout bool_vector; handle: in sprite_handle_type) is begin
+            enabled( get_sprite_id_from_handle( handle ) ) := false;
+        end procedure;
 
     begin
         if reset then
             enabled := (others => true);
+            game_over <= false;
         elsif rising_edge(clock) then
             if game_state_signal = GS_PLAY then
                 if collision(PLAYER_SHOT_ALIEN_1_COLLISION) then
---                if sprite_collisions( get_collision_id_from_handle(PLAYER_SHOT_ALIEN_1_COLLISION)) then
---                    disable_sprite(ALIEN_SHIP_1_SPRITE);
---                    enabled( get_sprite_id_from_handle( ALIEN_SHIP_1_SPRITE ) ) := false;
-                    enabled := disable_sprite(enabled, ALIEN_SHIP_1_SPRITE);
+                    disable_sprite(enabled, ALIEN_SHIP_1_SPRITE);
                 end if;
                 if collision(PLAYER_SHOT_ALIEN_2_COLLISION) then
---                if sprite_collisions( get_collision_id_from_handle(PLAYER_SHOT_ALIEN_2_COLLISION)) then
---                    disable_sprite(ALIEN_SHIP_2_SPRITE);
---                    enabled( get_sprite_id_from_handle( ALIEN_SHIP_2_SPRITE ) ) := false;
-                    enabled := disable_sprite(enabled, ALIEN_SHIP_2_SPRITE);
+                    disable_sprite(enabled, ALIEN_SHIP_2_SPRITE);
                 end if;
                 if collision(PLAYER_SHOT_ALIEN_3_COLLISION) then
---                if sprite_collisions( get_collision_id_from_handle(PLAYER_SHOT_ALIEN_3_COLLISION)) then
---                    disable_sprite(ALIEN_SHIP_3_SPRITE);
---                    enabled( get_sprite_id_from_handle( ALIEN_SHIP_3_SPRITE ) ) := false;
-                    enabled := disable_sprite(enabled, ALIEN_SHIP_3_SPRITE);
+                    disable_sprite(enabled, ALIEN_SHIP_3_SPRITE);
                 end if;
                 if collision(PLAYER_SHOT_ENEMY_1_COLLISION) then
---                if sprite_collisions( get_collision_id_from_handle(PLAYER_SHOT_ENEMY_1_COLLISION)) then
---                    disable_sprite(ENEMY_SHIP_1_SPRITE);
---                    disable_sprite(ENEMY_SHIP_2_SPRITE);
-                    enabled( get_sprite_id_from_handle( ENEMY_SHIP_1_SPRITE ) ) := false;
-                    enabled( get_sprite_id_from_handle( ENEMY_SHIP_2_SPRITE ) ) := false;
+                    disable_sprite(enabled, ENEMY_SHIP_1_SPRITE);
+                    disable_sprite(enabled, ENEMY_SHIP_2_SPRITE);
                 end if;
                 if collision(PLAYER_2_ALIEN_1_COLLISION) or
                     collision(PLAYER_2_ALIEN_2_COLLISION) or
                     collision(PLAYER_2_ALIEN_3_COLLISION) or
                     collision(PLAYER_2_ENEMY_1_COLLISION)
---                if sprite_collisions( get_collision_id_from_handle(PLAYER_2_ALIEN_1_COLLISION)) or
---                    sprite_collisions( get_collision_id_from_handle(PLAYER_2_ALIEN_2_COLLISION)) or
---                    sprite_collisions( get_collision_id_from_handle(PLAYER_2_ALIEN_3_COLLISION)) or
---                    sprite_collisions( get_collision_id_from_handle(PLAYER_2_ENEMY_1_COLLISION))
                 then
---                    disable_sprite(PLAYER_SHIP_1_SPRITE);
---                    disable_sprite(PLAYER_SHIP_2_SPRITE);
---                    enabled( get_sprite_id_from_handle( PLAYER_SHIP_1_SPRITE ) ) := false;
---                    enabled( get_sprite_id_from_handle( PLAYER_SHIP_2_SPRITE ) ) := false;
-                    enabled := disable_sprite(enabled, PLAYER_SHIP_1_SPRITE);
-                    enabled := disable_sprite(enabled, PLAYER_SHIP_2_SPRITE);
+                    disable_sprite(enabled, PLAYER_SHIP_1_SPRITE);
+                    disable_sprite(enabled, PLAYER_SHIP_2_SPRITE);
+                    game_over <= true;
                 end if;
             end if;
         end if;
@@ -204,8 +197,8 @@ begin
     ----------------------------------------------------------------------------
     -- Section 4) Update game state. This game has a very simple state logic:
     -- RESET --> PLAY --> GAME_WON or GAME_OVER
-    game_won <= false; -- treasure_found;
-    game_over <= enemy_ship_collision_1 or enemy_ship_collision_2;
+    game_won <= false;
+--    game_over <= enemy_ship_collision_1 or enemy_ship_collision_2;
     process (clock, reset) begin
         if reset then
             game_state_signal <= GS_RESET;
@@ -228,6 +221,8 @@ begin
     end process;
 
     game_state <= game_state_signal;
+
+
 
     debug_bits(7 downto 0) <= std_logic_vector_from_bool_vector(sprite_collisions);
 --    debug_bits(7 downto 0) <= std_logic_vector_from_bool_vector(sprites_enabled_signal)(0 to 7);

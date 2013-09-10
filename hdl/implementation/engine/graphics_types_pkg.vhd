@@ -35,6 +35,7 @@ package graphics_types_pkg is
 
     function "+" (lhs, rhs: point_type) return point_type;
     function "/" (lhs: point_type; rhs: integer) return point_type;
+    function is_in_view(position: point_type) return boolean;
 end;
 
 package body graphics_types_pkg is
@@ -49,4 +50,9 @@ package body graphics_types_pkg is
         return (lhs.x / rhs, lhs.y / rhs);
     end;
 
+    function is_in_view(position: point_type) return boolean is begin
+        return
+            position.x > 0 and position.x < GAME_VIEWPORT_WIDTH and
+            position.y > 0 and position.y < GAME_VIEWPORT_HEIGHT;
+    end;
 end;
