@@ -34,33 +34,33 @@ package resource_data_pkg is
     -- reading their positions and assigning them to the corresponding sprites
     constant GAME_NPCS: npc_init_array_type := (
         -- Player shot
-        (   PLAYER_SHOT_NPC,
+        (   NPC_PLAYER_SHOT,
             make_npc_projectile(
                 initial_position => (48, 152),
                 initial_speed => (4, 0),
                 allowed_region => (0, 0, 328, 240)
         )),
         -- Enemy ship 1
-        (   ENEMY_SHIP_NPC,
+        (   NPC_ENEMY_SHIP,
             make_npc_bouncer(
                 initial_position => (200, 60),
                 allowed_region => (200, 60, 300, 180),
                 initial_speed => (2, 2)
         )),
         -- Alien ship #1
-        (   ALIEN_SHIP_1_NPC,
+        (   NPC_ALIEN_SHIP_1,
             make_npc_bouncer(
                 initial_position => (400, 100),
                 initial_speed => (1, 2)
         )),
         -- Alien ship #2
-        (   ALIEN_SHIP_2_NPC,
+        (   NPC_ALIEN_SHIP_2,
             make_npc_bouncer(
                 initial_position => (410, 120),
                 initial_speed => (1, 2)
         )),
         -- Alien ship #3
-        (   ALIEN_SHIP_3_NPC,
+        (   NPC_ALIEN_SHIP_3,
             make_npc_bouncer(
                 initial_position => (420, 140),
                 initial_speed => (1, 2)

@@ -33,7 +33,7 @@ entity game_logic is
         -- The game logic tells whether each NPC is enabled
         npc_enables: out bool_vector;
         -- The game logic tells where the NPCs *should be* (their intended positions)
-        npc_target_positions: out point_array_type;
+        npc_assigned_positions: out point_array_type;
         -- The game engine calculates where the NPCs *actually are*
         npc_positions: in point_array_type;
         -- The game logic defines where the sprites *must be drawn* on the screen.
@@ -110,7 +110,7 @@ begin
             player_shot_fired <= true;
         elsif rising_edge(clock) then
             if player_shot_fired then
-                if not is_in_view(npc_positions(get_id(PLAYER_SHOT_NPC))) then
+                if not is_in_view(npc_positions(get_id(NPC_PLAYER_SHOT))) then
                     player_shot_fired <= false;
                 end if;
             else
@@ -121,15 +121,19 @@ begin
         end if;
     end process;
 
-
     ----------------------------------------------------------------------------
     -- Section 2) Update NPC NPC input data (enables and target positions)
     ----------------------------------------------------------------------------
 
-    -- We only need to assign the values correspoding to followers
-    npc_target_positions(1) <= player_position + (24, -4);
+    -- We only need to assign the values correspoding to followers and projectiles
+    npc_assigned_positions( get_id(NPC_PLAYER_SHOT) ) <= player_position + (16, 0);
+    npc_assigned_positions( get_id(NPC_ENEMY_SHIP) ) <= player_position + (24, -4);
 
-    npc_enables(npc_enables'range) <= (others => true);
+    npc_enables(npc_enables'range) <= (
+        get_id(NPC_PLAYER_SHOT) => player_shot_fired,
+--        0 => input_buttons.fire = '1',
+        others => true
+    );
 
     ----------------------------------------------------------------------------
     -- Section 3) Provide a screen position for each sprite. For static objects,
@@ -143,11 +147,10 @@ begin
         (PLAYER_SHOT_SPRITE, player_shot_position),
         (ENEMY_SHIP_1_SPRITE, enemy_ship_position),
         (ENEMY_SHIP_2_SPRITE, enemy_ship_position + point_type'(8,0)),
-        (ALIEN_SHIP_1_SPRITE, alien_ship_1_position ),
-        (ALIEN_SHIP_2_SPRITE, alien_ship_2_position ),
-        (ALIEN_SHIP_3_SPRITE, alien_ship_3_position )
+        (ALIEN_SHIP_1_SPRITE, alien_ship_1_position),
+        (ALIEN_SHIP_2_SPRITE, alien_ship_2_position),
+        (ALIEN_SHIP_3_SPRITE, alien_ship_3_position)
     ));
-
 
     update_sprites_enabled: process (clock, reset) is
         variable enabled: bool_vector(sprites_enabled'range) := (others => true);

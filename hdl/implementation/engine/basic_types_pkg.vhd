@@ -1,6 +1,8 @@
 library ieee;
 use ieee.std_logic_1164.all;
 
+-- This package is meant as a stop-gap solution while the boolean_vector type
+-- specified in VHDL 2008 is not availabe in the used synthesis tools.
 package basic_types_pkg is
     type bool_vector is array (natural range <>) of boolean;
 

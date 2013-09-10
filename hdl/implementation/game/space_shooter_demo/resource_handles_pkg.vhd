@@ -45,11 +45,11 @@ package resource_handles_pkg is
     -- Enumerated type for referencing all the NPCs (non-player characters) used
     -- in the game.
     type npc_handle_type is (
-        PLAYER_SHOT_NPC,
-        ENEMY_SHIP_NPC,
-        ALIEN_SHIP_1_NPC,
-        ALIEN_SHIP_2_NPC,
-        ALIEN_SHIP_3_NPC
+        NPC_PLAYER_SHOT,
+        NPC_ENEMY_SHIP,
+        NPC_ALIEN_SHIP_1,
+        NPC_ALIEN_SHIP_2,
+        NPC_ALIEN_SHIP_3
     );
 
 end;

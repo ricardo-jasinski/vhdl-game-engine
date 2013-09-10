@@ -18,13 +18,13 @@
 #
 # Quartus II 32-bit
 # Version 12.1 Build 243 01/31/2013 Service Pack 1 SJ Web Edition
-# Date created = 15:57:40  September 07, 2013
+# Date created = 23:41:36  September 09, 2013
 #
 # -------------------------------------------------------------------------- #
 
 QUARTUS_VERSION = "12.1"
-DATE = "15:57:40  September 07, 2013"
+DATE = "23:41:36  September 09, 2013"
 
 # Revisions
 
-PROJECT_REVISION = "de2_adventure_demo"
+PROJECT_REVISION = "de2_space_shooter_demo"

@@ -20,6 +20,8 @@ entity npc_ai_projectile is
         initial_speed: in point_type;
         -- limits for NPC movement
         allowed_region: in rectangle_type;
+        -- NPC restarts from this point if it was disabled
+        assigned_position: in point_type;
         -- calculated NPC position
         npc_position: out point_type
     );
@@ -31,6 +33,8 @@ architecture rtl of npc_ai_projectile is
     -- current NPC speed
     signal speed: point_type;
 
+    signal previous_enable: boolean;
+
 begin
 
     process (clock, reset, initial_position, initial_speed, time_base) is
@@ -41,24 +45,31 @@ begin
             speed <= initial_speed;
 
         elsif rising_edge(clock) then
-            if enabled and time_base = '1' then
-                new_position := position + speed;
+            if time_base = '1' then
+                if enabled then
+                    if previous_enable then
+                        new_position := position + speed;
+                    else
+                        new_position := assigned_position;
+                    end if;
 
-                -- make sure x position is within limits
-                if new_position.x <= allowed_region.left then
-                    new_position.x := allowed_region.left;
-                elsif new_position.x >= allowed_region.right then
-                    new_position.x := allowed_region.right;
+                    -- make sure x position is within limits
+                    if new_position.x <= allowed_region.left then
+                        new_position.x := allowed_region.left;
+                    elsif new_position.x >= allowed_region.right then
+                        new_position.x := allowed_region.right;
+                    end if;
+
+                    -- make sure y position is within limits
+                    if new_position.y <= allowed_region.top then
+                        new_position.y := allowed_region.top;
+                    elsif new_position.y >= allowed_region.bottom then
+                        new_position.y := allowed_region.bottom;
+                    end if;
+
+                    position <= new_position;
                 end if;
-
-                -- make sure y position is within limits
-                if new_position.y <= allowed_region.top then
-                    new_position.y := allowed_region.top;
-                elsif new_position.y >= allowed_region.bottom then
-                    new_position.y := allowed_region.bottom;
-                end if;
-
-                position <= new_position;
+                previous_enable <= enabled;
             end if;
         end if;
     end process;

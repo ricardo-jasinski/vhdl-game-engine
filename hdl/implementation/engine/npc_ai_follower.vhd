@@ -23,7 +23,7 @@ entity npc_ai_follower is
         absolute_speed: in integer range 0 to NPC_SPEED_MAX;
         slowdown_factor: in integer range 0 to NPC_SPEED_MAX;
         -- goal position, NPC moves towards this point
-        target_position: in point_type;
+        assigned_position: in point_type;
         -- calculated NPC position
         npc_position: out point_type
     );
@@ -64,15 +64,15 @@ begin
         elsif rising_edge(clock) then
 --            if scaled_time_base then
             if enabled and scaled_time_base = '1' then
-                if position.x < target_position.x then
+                if position.x < assigned_position.x then
                     new_position.x := position.x + absolute_speed;
-                elsif position.x > target_position.x then
+                elsif position.x > assigned_position.x then
                     new_position.x := position.x - absolute_speed;
                 end if;
 
-                if new_position.y < target_position.y then
+                if new_position.y < assigned_position.y then
                     new_position.y := position.y + absolute_speed;
-                elsif new_position.y > target_position.y then
+                elsif new_position.y > assigned_position.y then
                     new_position.y := position.y - absolute_speed;
                 end if;
 

@@ -32,7 +32,7 @@ begin
                 absolute_speed => npcs(i).absolute_speed,
                 slowdown_factor => npcs(i).slowdown_factor,
                 enabled => npc_enables(i),
-                target_position => npc_target_positions(i),
+                assigned_position => npc_target_positions(i),
                 npc_position => npc_positions(i)
             );
         end generate;
@@ -55,6 +55,7 @@ begin
                 initial_speed => npcs(i).initial_speed,
                 allowed_region => npcs(i).allowed_region,
                 enabled => npc_enables(i),
+                assigned_position => npc_target_positions(i),
                 npc_position => npc_positions(i)
             );
         end generate;

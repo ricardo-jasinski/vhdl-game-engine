@@ -65,7 +65,6 @@ begin
             vga_signals => vga_signals,
             sprites_coordinates => sprites_coordinates,
             sprites_enabled => sprites_enabled,
---            sprites_enabled => (others => false),
             sprite_collisions_results => sprite_collisions_results,
             background_bitmap => background_bitmap
          );

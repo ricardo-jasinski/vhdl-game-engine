@@ -116,7 +116,7 @@ begin
             reset => reset,
             time_base_50_ms => time_base_50_ms,
             npc_enables => npcs_enabled,
-            npc_target_positions => npc_target_positions,
+            npc_assigned_positions => npc_target_positions,
             npc_positions => npc_positions,
             sprites_enabled => sprites_enabled,
             sprite_collisions => sprite_collisions,
