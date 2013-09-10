@@ -8,25 +8,25 @@ package resource_data_pkg is
 
     -- Here we define all the sprites used in the game
     constant GAME_SPRITES: sprite_init_array_type := (
-        (PLAYER_SHIP_1_SPRITE,  bitmap_handle => PLAYER_SHIP_1_BITMAP),
-        (PLAYER_SHIP_2_SPRITE,  bitmap_handle => PLAYER_SHIP_2_BITMAP),
-        (PLAYER_SHOT_SPRITE,    bitmap_handle => PLAYER_SHOT_BITMAP),
-        (ENEMY_SHIP_1_SPRITE,   bitmap_handle => ENEMY_SHIP_1_BITMAP),
-        (ENEMY_SHIP_2_SPRITE,   bitmap_handle => ENEMY_SHIP_2_BITMAP),
-        (ALIEN_SHIP_1_SPRITE,   bitmap_handle => ALIEN_SHIP_BITMAP),
-        (ALIEN_SHIP_2_SPRITE,   bitmap_handle => ALIEN_SHIP_BITMAP),
-        (ALIEN_SHIP_3_SPRITE,   bitmap_handle => ALIEN_SHIP_BITMAP)
+        (SPRITE_PLAYER_SHIP_1,  bitmap_handle => BITMAP_PLAYER_SHIP_1),
+        (SPRITE_PLAYER_SHIP_2,  bitmap_handle => BITMAP_PLAYER_SHIP_2),
+        (SPRITE_PLAYER_SHOT,    bitmap_handle => BITMAP_PLAYER_SHOT),
+        (SPRITE_ENEMY_SHIP_1,   bitmap_handle => BITMAP_ENEMY_SHIP_1),
+        (SPRITE_ENEMY_SHIP_2,   bitmap_handle => BITMAP_ENEMY_SHIP_2),
+        (SPRITE_ALIEN_SHIP_1,   bitmap_handle => BITMAP_ALIEN_SHIP),
+        (SPRITE_ALIEN_SHIP_2,   bitmap_handle => BITMAP_ALIEN_SHIP),
+        (SPRITE_ALIEN_SHIP_3,   bitmap_handle => BITMAP_ALIEN_SHIP)
     );
 
     constant GAME_COLLISIONS: sprite_collision_init_array_type := (
-        ( PLAYER_SHOT_ALIEN_1_COLLISION,    PLAYER_SHOT_SPRITE,     ALIEN_SHIP_1_SPRITE ),
-        ( PLAYER_SHOT_ALIEN_2_COLLISION,    PLAYER_SHOT_SPRITE,     ALIEN_SHIP_2_SPRITE ),
-        ( PLAYER_SHOT_ALIEN_3_COLLISION,    PLAYER_SHOT_SPRITE,     ALIEN_SHIP_3_SPRITE ),
-        ( PLAYER_SHOT_ENEMY_1_COLLISION,    PLAYER_SHOT_SPRITE,     ENEMY_SHIP_1_SPRITE ),
-        ( PLAYER_2_ALIEN_1_COLLISION,       PLAYER_SHIP_2_SPRITE,   ALIEN_SHIP_1_SPRITE ),
-        ( PLAYER_2_ALIEN_2_COLLISION,       PLAYER_SHIP_2_SPRITE,   ALIEN_SHIP_2_SPRITE ),
-        ( PLAYER_2_ALIEN_2_COLLISION,       PLAYER_SHIP_2_SPRITE,   ALIEN_SHIP_3_SPRITE ),
-        ( PLAYER_2_ENEMY_1_COLLISION,       PLAYER_SHIP_2_SPRITE,   ENEMY_SHIP_2_SPRITE )
+        ( COLLISION_PLAYER_SHOT_ALIEN_1,    SPRITE_PLAYER_SHOT,     SPRITE_ALIEN_SHIP_1 ),
+        ( COLLISION_PLAYER_SHOT_ALIEN_2,    SPRITE_PLAYER_SHOT,     SPRITE_ALIEN_SHIP_2 ),
+        ( COLLISION_PLAYER_SHOT_ALIEN_3,    SPRITE_PLAYER_SHOT,     SPRITE_ALIEN_SHIP_3 ),
+        ( COLLISION_PLAYER_SHOT_ENEMY_1,    SPRITE_PLAYER_SHOT,     SPRITE_ENEMY_SHIP_1 ),
+        ( COLLISION_PLAYER_2_ALIEN_1,       SPRITE_PLAYER_SHIP_2,   SPRITE_ALIEN_SHIP_1 ),
+        ( COLLISION_PLAYER_2_ALIEN_2,       SPRITE_PLAYER_SHIP_2,   SPRITE_ALIEN_SHIP_2 ),
+        ( COLLISION_PLAYER_2_ALIEN_2,       SPRITE_PLAYER_SHIP_2,   SPRITE_ALIEN_SHIP_3 ),
+        ( COLLISION_PLAYER_2_ENEMY_1,       SPRITE_PLAYER_SHIP_2,   SPRITE_ENEMY_SHIP_2 )
     );
 
     -- Define the Non-Player Characters (NPCs) used in the game. NPCs have
@@ -71,7 +71,7 @@ package resource_data_pkg is
     -- Here we define the actual bitmaps for each sprite in the game. This is
     -- the second step to add a new sprite in the game.
     constant GAME_BITMAPS: bitmap_init_array_type := (
-        (   handle => PLAYER_SHIP_1_BITMAP,
+        (   handle => BITMAP_PLAYER_SHIP_1,
             bitmap => (
                 ( 0, 20, 53, 53, 53, 53, 53, 17),
                 ( 0, 55, 24, 20, 20, 20, 20, 53),
@@ -83,7 +83,7 @@ package resource_data_pkg is
                 ( 0, 18, 18, 18,  0,  0,  0,  0)
             )
         ),
-        (   handle => PLAYER_SHIP_2_BITMAP,
+        (   handle => BITMAP_PLAYER_SHIP_2,
             bitmap => (
                 (33,  0,  0,  0,  0,  0,  0,  0),
                 (53, 19,  0,  0,  0,  0,  0,  0),
@@ -95,7 +95,7 @@ package resource_data_pkg is
                 ( 0,  0,  0, 19, 20, 20, 20, 17)
             )
         ),
-        (   handle => PLAYER_SHOT_BITMAP,
+        (   handle => BITMAP_PLAYER_SHOT,
             bitmap => (
                 ( 0,  0,  0,  0,  0,  0,  0,  0),
                 ( 0,  0,  0,  0,  0,  0,  0,  0),
@@ -107,7 +107,7 @@ package resource_data_pkg is
                 ( 0,  0,  0,  0,  0,  0,  0,  0)
             )
         ),
-        (   handle => ENEMY_SHIP_1_BITMAP,
+        (   handle => BITMAP_ENEMY_SHIP_1,
             bitmap => (
                 ( 0,  0,  0,  0,  0,  0,  0,  0),
                 ( 0,  0,  0, 33, 17, 17, 17, 17),
@@ -119,7 +119,7 @@ package resource_data_pkg is
                 ( 0,  0,  0,  0,  0, 33, 17, 17)
             )
         ),
-        (   handle => ENEMY_SHIP_2_BITMAP,
+        (   handle => BITMAP_ENEMY_SHIP_2,
             bitmap => (
                 ( 0,  0,  0,  0,  0,  0,  0,  0),
                 (17, 17,  0,  0,  0,  0,  0,  0),
@@ -131,7 +131,7 @@ package resource_data_pkg is
                 (17, 17, 17,  0,  0,  0,  0,  0)
             )
         ),
-        (   handle => ALIEN_SHIP_BITMAP,
+        (   handle => BITMAP_ALIEN_SHIP,
             bitmap => (
                 ( 0,  0, 22, 23, 23, 23, 22,  0),
                 (22, 23, 23,  0, 17, 19, 23, 22),

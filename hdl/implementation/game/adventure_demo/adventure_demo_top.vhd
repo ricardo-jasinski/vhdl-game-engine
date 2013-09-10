@@ -32,8 +32,7 @@ entity adventure_demo_top is
         vga_n_hsync: out std_logic;
         -- VGA Vsync, low during vertical synchronism pulse
         vga_n_vsync: out std_logic;
-        -- Composite sync for the ADV7123; if this feature is not used, should
-        -- be tied to '0'
+        -- Composite sync for the ADV7123; if not used, should be tied low
         vga_n_sync: out std_logic;
         -- VGA red channel output
         vga_red: out std_logic_vector(9 downto 0);
@@ -68,73 +67,20 @@ architecture rtl of adventure_demo_top is
     -- the game logic module and used as an input by the sprites engine
     signal sprite_positions: point_array_type(GAME_SPRITES'range);
 
-    -- We need to tell the sprites engine which sprites we want to monitor for
-    -- collisions. The query array helps us do it neatly.
-    constant SPRITES_COLLISION_QUERY: sprite_collision_query_type := make_sprites_collision_query((
-        (SORCERER_SPRITE, GHOST_SPRITE),
-        (SORCERER_SPRITE, SCORPION_SPRITE),
-        (SORCERER_SPRITE, ORYX_11_SPRITE),
-        (SORCERER_SPRITE, CHEST_SPRITE)
-    ));
-
     -- Each element is 'true' while the two corresponding sprites are colliding.
-    signal sprite_collisions: bool_vector(SPRITES_COLLISION_QUERY'range);
-
-    -- We need to initialize the sprites engine with the game sprites. This
-    -- initialization array helps us do it neatly. The helper function will
-    -- fetch user-provided data from the GAME_SPRITES array and return an
-    -- array of sprites ready to be assigned to sprite engine upon reset.
-    constant SPRITES_INITIAL_VALUES: sprites_array_type := make_sprites_initial_values(GAME_SPRITES);
+    signal sprite_collisions: bool_vector(GAME_COLLISIONS'range);
 
     -- Background image to be used by the video engine; currently, the game
-    -- logic is responsible for providing the video engine with background tile
+    -- logic is responsible for providing the video engine with a background tile
     signal background_bitmap: paletted_bitmap_type(0 to 7, 0 to 7);
-
-    -- Define the Non-Player Characters (NPCs) used in the game. The NPCs have
-    -- their positions updated automatically; the user logic is responsible for
-    -- reading their positions and assigning them to the corresponding sprites
-    constant NPCS: npc_array_type := (
-        -- Ghost, moves around the chest in a diamond-shaped path
-        make_npc_bouncer(
-            initial_position => (144, 64),
-            allowed_region => (128, 64, 160, 96),
-            initial_speed => (1, 1)
-        ),
-        -- Scorpion, moves horizontally accross the screen
-        make_npc_bouncer(
-            initial_position => (0, 128),
-            initial_speed => (1, 0)
-        ),
-        -- Bat, moves horizontally
-        make_npc_bouncer(
-            initial_position => (160, 160),
-            allowed_region => (0, 160, 300, 164),
-            initial_speed => (1, 1)
-        ),
-        -- Oryx, tries to kill the player with its sword
-        make_npc_follower(
-            initial_position => (300, 220),
-            slowdown_factor => 2
-        ),
-        -- Archer, tries to hide behind the player
-        make_npc_follower(
-            initial_position => (0, 0),
-            slowdown_factor => 1
-        ),
-        -- Reaper, stays near the player
-        make_npc_follower(
-            initial_position => (300, 64),
-            slowdown_factor => 4
-        )
-    );
 
     -- User logic must inform the NPC engine what are the target positions
     -- for the NPCs; some types of AI (e.g., AI_FOLLOWER) use this value to
     -- calculate their next position
-    signal npc_target_positions: point_array_type(NPCS'range);
+    signal npc_target_positions: point_array_type(GAME_NPCS'range);
     -- The game engine (NPC engine, actually) calculates the NPC positions
     -- and these values are handed over to the game logic
-    signal npc_positions: point_array_type(NPCS'range);
+    signal npc_positions: point_array_type(GAME_NPCS'range);
 
     signal in_buttons: input_buttons_type;
     signal game_state: game_state_type;
@@ -155,7 +101,7 @@ begin
     ----------------------------------------------------------------------------
     -- Section 1) Instantiate the game logic. This entity receives the raw game
     -- data and events, and updates the game state accordingly.
-
+    ----------------------------------------------------------------------------
     logic: entity work.game_logic
         port map(
             clock => clock_50_Mhz,
@@ -173,31 +119,32 @@ begin
     ----------------------------------------------------------------------------
     -- Section 2) Instantiate the NPC engine. This entity receives low-level
     -- game data, and updates the NPC positions.
-
+    ----------------------------------------------------------------------------
     npc: entity work.npcs_engine
         generic map (
-            NPC_DEFINITIONS => NPCS
+            NPC_DEFINITIONS => make_npcs_initial_values(GAME_NPCS)
         ) port map (
             clock => clock_50_Mhz,
             reset => reset,
             time_base => time_base_50_ms,
-            target_positions => npc_target_positions,
+            npc_enables => (GAME_NPCS'range => true),
+            npc_target_positions => npc_target_positions,
             npc_positions => npc_positions
         );
 
     ----------------------------------------------------------------------------
-    -- Section 3) Instantiate the game engine. While game logic performs
-    -- functions that are more related with the game itself, the game engine
+    -- Section 3) Instantiate the game engine. The game engine
     -- performs basic functions such as calculating sprite collisions and
     -- rendering the video output.
-
+    ----------------------------------------------------------------------------
     engine: entity work.game_engine
         generic map (
-            SPRITES_INITIAL_VALUES => SPRITES_INITIAL_VALUES,
-            SPRITES_COLLISION_QUERY => SPRITES_COLLISION_QUERY
+            SPRITES_INITIAL_VALUES => make_sprites_initial_values(GAME_SPRITES),
+            SPRITES_COLLISION_QUERY => make_sprites_collision_query(GAME_COLLISIONS)
         ) port map (
             clock_50MHz => clock_50_Mhz,
             reset => reset,
+            sprites_enabled => (GAME_SPRITES'range => true),
             sprites_coordinates => sprite_positions,
             sprite_collisions_results => sprite_collisions,
             elapsed_time => elapsed_time,
@@ -214,9 +161,9 @@ begin
     -- is the only feedback we provide the player with)
 
     with game_state select background_bitmap <=
-        get_bitmap_from_handle(GAME_OVER_TILE_BITMAP) when GS_GAME_OVER,
-        get_bitmap_from_handle(GAME_WON_TILE_BITMAP) when GS_GAME_WON,
-        get_bitmap_from_handle(FOREST_TILE_BITMAP) when others;
+        get_bitmap_from_handle(BITMAP_GAME_OVER_TILE) when GS_GAME_OVER,
+        get_bitmap_from_handle(BITMAP_GAME_WON_TILE) when GS_GAME_WON,
+        get_bitmap_from_handle(BITMAP_FOREST_TILE) when others;
 
     ----------------------------------------------------------------------------
     -- Section 5) Convert signals between std_logic and custom data types.
@@ -228,7 +175,8 @@ begin
         up => input_buttons(3),
         down => input_buttons(2),
         left => input_buttons(1),
-        right => input_buttons(0)
+        right => input_buttons(0),
+        fire => input_switches(0)
     );
 
     -- Connect each VGA output signal to the correspoding VGA pin or port

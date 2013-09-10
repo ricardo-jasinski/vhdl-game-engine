@@ -5,41 +5,37 @@ package resource_handles_pkg is
 
     -- Enumerated type used for referencing all bitmaps used in the game.
     type bitmap_handle_type is (
-        PLAYER_SHIP_1_BITMAP,   -- player ship (bitmap 1/2)
-        PLAYER_SHIP_2_BITMAP,   -- player ship (bitmap 2/2)
-        PLAYER_SHOT_BITMAP,     -- shot fired from player ship
-        ENEMY_SHIP_1_BITMAP,    -- enemy ship (bitmap 1/2)
-        ENEMY_SHIP_2_BITMAP,    -- enemy ship (bitmap 2/2)
-        ALIEN_SHIP_BITMAP       -- alien ship bitmap
-
---        SPACE_BACKGOUND_BITMAP
---        GAME_OVER_TILE_BITMAP,
---        GAME_WON_TILE_BITMAP
+        BITMAP_PLAYER_SHIP_1,   -- player ship (bitmap 1/2)
+        BITMAP_PLAYER_SHIP_2,   -- player ship (bitmap 2/2)
+        BITMAP_PLAYER_SHOT,     -- shot fired from player ship
+        BITMAP_ENEMY_SHIP_1,    -- enemy ship (bitmap 1/2)
+        BITMAP_ENEMY_SHIP_2,    -- enemy ship (bitmap 2/2)
+        BITMAP_ALIEN_SHIP       -- alien ship bitmap
     );
 
     -- Enumerated type for referencing all the sprites used in the game.
     type sprite_handle_type is (
-        PLAYER_SHIP_1_SPRITE,   -- player ship (sprite 1/2)
-        PLAYER_SHIP_2_SPRITE,   -- player ship (sprite 2/2)
-        PLAYER_SHOT_SPRITE,     -- shot fired from player ship
-        ENEMY_SHIP_1_SPRITE,    -- enemy ship (sprite 1/2)
-        ENEMY_SHIP_2_SPRITE,    -- enemy ship (sprite 2/2)
-        ALIEN_SHIP_1_SPRITE,    -- alien ship sprite
-        ALIEN_SHIP_2_SPRITE,    -- alien ship sprite
-        ALIEN_SHIP_3_SPRITE     -- alien ship sprite
+        SPRITE_PLAYER_SHIP_1,   -- player ship (sprite 1/2)
+        SPRITE_PLAYER_SHIP_2,   -- player ship (sprite 2/2)
+        SPRITE_PLAYER_SHOT,     -- shot fired from player ship
+        SPRITE_ENEMY_SHIP_1,    -- enemy ship (sprite 1/2)
+        SPRITE_ENEMY_SHIP_2,    -- enemy ship (sprite 2/2)
+        SPRITE_ALIEN_SHIP_1,    -- alien ship sprite
+        SPRITE_ALIEN_SHIP_2,    -- alien ship sprite
+        SPRITE_ALIEN_SHIP_3     -- alien ship sprite
     );
 
     -- Enumerated type for referencing all sprite collisions that must be
     -- monitored in the game.
     type sprite_collision_handle_type is (
-        PLAYER_SHOT_ALIEN_1_COLLISION,
-        PLAYER_SHOT_ALIEN_2_COLLISION,
-        PLAYER_SHOT_ALIEN_3_COLLISION,
-        PLAYER_SHOT_ENEMY_1_COLLISION,
-        PLAYER_2_ALIEN_1_COLLISION,
-        PLAYER_2_ALIEN_2_COLLISION,
-        PLAYER_2_ALIEN_3_COLLISION,
-        PLAYER_2_ENEMY_1_COLLISION
+        COLLISION_PLAYER_SHOT_ALIEN_1,
+        COLLISION_PLAYER_SHOT_ALIEN_2,
+        COLLISION_PLAYER_SHOT_ALIEN_3,
+        COLLISION_PLAYER_SHOT_ENEMY_1,
+        COLLISION_PLAYER_2_ALIEN_1,
+        COLLISION_PLAYER_2_ALIEN_2,
+        COLLISION_PLAYER_2_ALIEN_3,
+        COLLISION_PLAYER_2_ENEMY_1
     );
 
     -- Enumerated type for referencing all the NPCs (non-player characters) used

@@ -17,13 +17,21 @@ entity de2_adventure_demo_top is
         key: in std_logic_vector(3 downto 0);
         -- Green leds
         ledg: out std_logic_vector(7 downto 0);
+        -- Pixel clock for the ADV7123 video DAC
         vga_clk: out std_logic;
+        -- VGA blank signal, high outside of active area
         vga_blank: out std_logic;
+        -- VGA horizontal sync, pulsed low between lines
         vga_hs: out std_logic;
+        -- VGA vertical sync, pulsed low between frames
         vga_vs: out std_logic;
+        -- Composite sync for the ADV7123; if not used, should be tied low
         vga_sync: out std_logic;
+        -- VGA red channel output
         vga_r: out std_logic_vector(9 downto 0);
+        -- VGA green channel output
         vga_g: out std_logic_vector(9 downto 0);
+        -- VGA blue channel output
         vga_b: out std_logic_vector(9 downto 0)
     );
 end;
@@ -61,8 +69,8 @@ begin
             input_buttons  => not key
         );
 
-    -- PLL below is used to generate the pixel clock frequency
-    -- Uses DE2 50Mhz clock for PLL's input clock
+    -- Instantiate a PLL to generate the pixel clock frequency (~25 MHZ),
+    -- using the DE2 50Mhz clock as input
     video_PLL_inst : video_PLL port map (
         inclk0 => clock_50,
         c0 => vga_pll_clock_out

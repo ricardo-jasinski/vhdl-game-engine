@@ -66,7 +66,7 @@ package body resource_data_helper_pkg is
         variable npcs: npc_array_type(npcs_init_array'range);
     begin
         for i in npcs'range loop
-            npcs(i) := npcs_init_array(i).npc;
+            npcs( get_id(npcs_init_array(i).npc_handle) ) := npcs_init_array(i).npc;
         end loop;
         return npcs;
     end;

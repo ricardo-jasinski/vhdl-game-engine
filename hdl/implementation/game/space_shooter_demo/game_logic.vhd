@@ -142,14 +142,14 @@ begin
     ----------------------------------------------------------------------------
 
     sprites_positions <= make_sprite_positions((
-        (PLAYER_SHIP_1_SPRITE, player_position),
-        (PLAYER_SHIP_2_SPRITE, player_position + point_type'(8,0)),
-        (PLAYER_SHOT_SPRITE, player_shot_position),
-        (ENEMY_SHIP_1_SPRITE, enemy_ship_position),
-        (ENEMY_SHIP_2_SPRITE, enemy_ship_position + point_type'(8,0)),
-        (ALIEN_SHIP_1_SPRITE, alien_ship_1_position),
-        (ALIEN_SHIP_2_SPRITE, alien_ship_2_position),
-        (ALIEN_SHIP_3_SPRITE, alien_ship_3_position)
+        (SPRITE_PLAYER_SHIP_1, player_position),
+        (SPRITE_PLAYER_SHIP_2, player_position + point_type'(8,0)),
+        (SPRITE_PLAYER_SHOT, player_shot_position),
+        (SPRITE_ENEMY_SHIP_1, enemy_ship_position),
+        (SPRITE_ENEMY_SHIP_2, enemy_ship_position + point_type'(8,0)),
+        (SPRITE_ALIEN_SHIP_1, alien_ship_1_position),
+        (SPRITE_ALIEN_SHIP_2, alien_ship_2_position),
+        (SPRITE_ALIEN_SHIP_3, alien_ship_3_position)
     ));
 
     update_sprites_enabled: process (clock, reset) is
@@ -169,26 +169,26 @@ begin
             game_over <= false;
         elsif rising_edge(clock) then
             if game_state_signal = GS_PLAY then
-                if collision(PLAYER_SHOT_ALIEN_1_COLLISION) then
-                    disable_sprite(enabled, ALIEN_SHIP_1_SPRITE);
+                if collision(COLLISION_PLAYER_SHOT_ALIEN_1) then
+                    disable_sprite(enabled, SPRITE_ALIEN_SHIP_1);
                 end if;
-                if collision(PLAYER_SHOT_ALIEN_2_COLLISION) then
-                    disable_sprite(enabled, ALIEN_SHIP_2_SPRITE);
+                if collision(COLLISION_PLAYER_SHOT_ALIEN_2) then
+                    disable_sprite(enabled, SPRITE_ALIEN_SHIP_2);
                 end if;
-                if collision(PLAYER_SHOT_ALIEN_3_COLLISION) then
-                    disable_sprite(enabled, ALIEN_SHIP_3_SPRITE);
+                if collision(COLLISION_PLAYER_SHOT_ALIEN_3) then
+                    disable_sprite(enabled, SPRITE_ALIEN_SHIP_3);
                 end if;
-                if collision(PLAYER_SHOT_ENEMY_1_COLLISION) then
-                    disable_sprite(enabled, ENEMY_SHIP_1_SPRITE);
-                    disable_sprite(enabled, ENEMY_SHIP_2_SPRITE);
+                if collision(COLLISION_PLAYER_SHOT_ENEMY_1) then
+                    disable_sprite(enabled, SPRITE_ENEMY_SHIP_1);
+                    disable_sprite(enabled, SPRITE_ENEMY_SHIP_2);
                 end if;
-                if collision(PLAYER_2_ALIEN_1_COLLISION) or
-                    collision(PLAYER_2_ALIEN_2_COLLISION) or
-                    collision(PLAYER_2_ALIEN_3_COLLISION) or
-                    collision(PLAYER_2_ENEMY_1_COLLISION)
+                if collision(COLLISION_PLAYER_2_ALIEN_1) or
+                    collision(COLLISION_PLAYER_2_ALIEN_2) or
+                    collision(COLLISION_PLAYER_2_ALIEN_3) or
+                    collision(COLLISION_PLAYER_2_ENEMY_1)
                 then
-                    disable_sprite(enabled, PLAYER_SHIP_1_SPRITE);
-                    disable_sprite(enabled, PLAYER_SHIP_2_SPRITE);
+                    disable_sprite(enabled, SPRITE_PLAYER_SHIP_1);
+                    disable_sprite(enabled, SPRITE_PLAYER_SHIP_2);
                     game_over <= true;
                 end if;
             end if;

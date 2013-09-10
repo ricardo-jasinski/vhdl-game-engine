@@ -2,30 +2,84 @@ use work.sprites_pkg.all;
 use work.graphics_types_pkg.all;
 use work.resource_handles_pkg.all;
 use work.resource_handles_helper_pkg.all;
+use work.npc_pkg.all;
 
 package resource_data_pkg is
 
     -- Here we define all the sprites used in the game
     constant GAME_SPRITES: sprite_init_array_type := (
-        (SORCERER_SPRITE, bitmap_handle => SORCERER_BITMAP),
-        (AXE_SPRITE,      bitmap_handle => AXE_BITMAP     ),
-        (ARCHER_SPRITE,   bitmap_handle => ARCHER_BITMAP  ),
-        (CHEST_SPRITE,    bitmap_handle => CHEST_BITMAP   ),
-        (GHOST_SPRITE,    bitmap_handle => GHOST_BITMAP   ),
-        (SCORPION_SPRITE, bitmap_handle => SCORPION_BITMAP),
-        (ORYX_11_SPRITE,  bitmap_handle => ORYX_11_BITMAP ),
-        (ORYX_12_SPRITE,  bitmap_handle => ORYX_12_BITMAP ),
-        (ORYX_21_SPRITE,  bitmap_handle => ORYX_21_BITMAP ),
-        (ORYX_22_SPRITE,  bitmap_handle => ORYX_22_BITMAP ),
-        (BAT_SPRITE,      bitmap_handle => BAT_BITMAP     ),
-        (REAPER_SPRITE,   bitmap_handle => REAPER_BITMAP  )
+        (SPRITE_PLAYER, bitmap_handle => BITMAP_SORCERER),
+        (SPRITE_AXE,      bitmap_handle => BITMAP_AXE     ),
+        (SPRITE_ARCHER,   bitmap_handle => BITMAP_ARCHER  ),
+        (SPRITE_CHEST,    bitmap_handle => BITMAP_CHEST   ),
+        (SPRITE_GHOST,    bitmap_handle => BITMAP_GHOST   ),
+        (SPRITE_SCORPION, bitmap_handle => BITMAP_SCORPION),
+        (SPRITE_ORYX_11,  bitmap_handle => BITMAP_ORYX_11 ),
+        (SPRITE_ORYX_12,  bitmap_handle => BITMAP_ORYX_12 ),
+        (SPRITE_ORYX_21,  bitmap_handle => BITMAP_ORYX_21 ),
+        (SPRITE_ORYX_22,  bitmap_handle => BITMAP_ORYX_22 ),
+        (SPRITE_BAT,      bitmap_handle => BITMAP_BAT     ),
+        (SPRITE_REAPER,   bitmap_handle => BITMAP_REAPER  )
     );
+
+    constant GAME_COLLISIONS: sprite_collision_init_array_type := (
+        ( COLLISION_PLAYER_GHOST,           SPRITE_PLAYER,     SPRITE_GHOST    ),
+        ( COLLISION_PLAYER_SCORPION,        SPRITE_PLAYER,     SPRITE_SCORPION ),
+        ( COLLISION_PLAYER_ORYX,            SPRITE_PLAYER,     SPRITE_ORYX_11  ),
+        ( COLLISION_PLAYER_CHEST,           SPRITE_PLAYER,     SPRITE_CHEST    ),
+        ( COLLISION_PLAYER_REAPER,          SPRITE_PLAYER,     SPRITE_REAPER   )
+    );
+
+    -- Define the Non-Player Characters (NPCs) used in the game. NPCs have
+    -- their positions updated automatically; the user logic is responsible for
+    -- reading their positions and assigning them to the corresponding sprites
+    constant GAME_NPCS: npc_init_array_type := (
+        -- Ghost, moves around the chest in a diamond-shaped path
+        (   NPC_GHOST,
+            make_npc_bouncer(
+                initial_position => (144, 64),
+                allowed_region => (128, 64, 160, 96),
+                initial_speed => (1, 1)
+        )),
+        -- Scorpion, moves horizontally accross the screen
+        (   NPC_SCORPION,
+            make_npc_bouncer(
+                initial_position => (0, 128),
+                initial_speed => (1, 0)
+        )),
+        -- Bat, moves horizontally
+        (   NPC_BAT,
+            make_npc_bouncer(
+                initial_position => (160, 160),
+                allowed_region => (0, 160, 300, 164),
+                initial_speed => (1, 1)
+        )),
+        -- Oryx, tries to kill the player with its sword
+        (   NPC_ORYX,
+            make_npc_follower(
+                initial_position => (300, 220),
+                slowdown_factor => 2
+        )),
+        -- Archer, tries to hide behind the player
+        (   NPC_ARCHER,
+            make_npc_follower(
+                initial_position => (0, 0),
+                slowdown_factor => 1
+        )),
+        -- Reaper, stays near the player
+        (   NPC_REAPER,
+            make_npc_follower(
+                initial_position => (300, 64),
+                slowdown_factor => 4
+        ))
+    );
+
 
     -- Here we define the actual bitmaps for each sprite in the game. This is
     -- the second step to add a new sprite in the game.
     constant GAME_BITMAPS: bitmap_init_array_type := (
         (
-            handle => SORCERER_BITMAP,
+            handle => BITMAP_SORCERER,
             bitmap => (
                 (23, 23, 24, 24, 23,  0, 20, 20),
                 ( 0, 23, 24, 24, 23, 23,  0, 20),
@@ -38,7 +92,7 @@ package resource_data_pkg is
             )
         ),
         (
-            handle => AXE_BITMAP,
+            handle => BITMAP_AXE,
             bitmap => (
                 ( 0,  0,  0,  0,  0,  0,  0,  0),
                 ( 0,  0,  0, 18,  0,  0, 37,  0),
@@ -51,7 +105,7 @@ package resource_data_pkg is
             )
         ),
         (
-            handle => ARCHER_BITMAP,
+            handle => BITMAP_ARCHER,
             bitmap => (
                 (29, 29, 30, 30, 29,  0, 25,  0),
                 ( 0, 29, 30, 30, 30, 29,  0, 25),
@@ -64,7 +118,7 @@ package resource_data_pkg is
             )
         ),
         (
-            handle => CHEST_BITMAP,
+            handle => BITMAP_CHEST,
             bitmap => (
                 ( 0,  0,  0,  0,  0,  0,  0,  0),
                 ( 0, 38, 38, 38, 38, 38, 38,  0),
@@ -77,7 +131,7 @@ package resource_data_pkg is
             )
         ),
         (
-            handle => GHOST_BITMAP,
+            handle => BITMAP_GHOST,
             bitmap => (
                 ( 0,  0,  0, 53, 53, 53, 20,  0),
                 ( 0,  0, 53, 53, 24, 53, 24,  0),
@@ -90,7 +144,7 @@ package resource_data_pkg is
             )
         ),
         (
-            handle => SCORPION_BITMAP,
+            handle => BITMAP_SCORPION,
             bitmap => (
                 ( 0, 18, 18, 18,  0,  0,  0,  0),
                 (18,  0,  0, 17, 17,  0,  0,  0),
@@ -103,7 +157,7 @@ package resource_data_pkg is
             )
         ),
         (
-            handle => ORYX_11_BITMAP,
+            handle => BITMAP_ORYX_11,
             bitmap => (
                 ( 0, 20,  0,  0, 20,  0,  0,  0),
                 (20, 20,  0, 20,  0,  0, 34, 34),
@@ -116,7 +170,7 @@ package resource_data_pkg is
             )
         ),
         (
-            handle => ORYX_12_BITMAP,
+            handle => BITMAP_ORYX_12,
             bitmap => (
                 ( 0,  0,  0, 20,  0,  0,  0,  0),
                 (34, 34,  0,  0, 20,  0,  0,  0),
@@ -129,7 +183,7 @@ package resource_data_pkg is
             )
         ),
         (
-            handle => ORYX_21_BITMAP,
+            handle => BITMAP_ORYX_21,
             bitmap => (
                 (17, 34, 17, 34, 33, 17, 17, 34),
                 (34, 34,  0,  0, 34, 34, 34, 33),
@@ -142,7 +196,7 @@ package resource_data_pkg is
             )
         ),
         (
-            handle => ORYX_22_BITMAP,
+            handle => BITMAP_ORYX_22,
             bitmap => (
                 (34, 17, 17, 34, 18, 18, 20, 34),
                 (33, 34, 34, 34, 18, 20, 20, 34),
@@ -155,7 +209,7 @@ package resource_data_pkg is
             )
         ),
         (
-            handle => BAT_BITMAP,
+            handle => BITMAP_BAT,
             bitmap => (
                 ( 0,  0,  0, 17,  0, 17,  0,  0),
                 ( 0, 17,  0, 17, 17, 17,  0, 17),
@@ -167,7 +221,7 @@ package resource_data_pkg is
                 ( 0,  0,  0,  0,  0,  0,  0,  0)
             )
         ),
-       (    handle => REAPER_BITMAP,
+       (    handle => BITMAP_REAPER,
             bitmap => (
                 (34, 34, 34, 19, 19, 19, 19, 19),
                 ( 0, 34, 19, 33, 33, 33,  0, 38),
@@ -178,7 +232,7 @@ package resource_data_pkg is
                 ( 0, 34, 34, 34, 34, 34,  0, 38),
                 (34, 34, 34, 34, 34, 34, 34, 38)
         )),
-        (   handle => FOREST_TILE_BITMAP,
+        (   handle => BITMAP_FOREST_TILE,
             bitmap => (
                 (11, 11, 11, 11, 12,  1, 11, 11),
                 (12,  1, 11, 11, 11, 12, 11, 11),
@@ -190,7 +244,7 @@ package resource_data_pkg is
                 (11, 11, 12, 11, 11, 11, 11, 11)
         )),
         (
-            handle => GAME_OVER_TILE_BITMAP,
+            handle => BITMAP_GAME_OVER_TILE,
             bitmap => (
                 (22, 46, 22, 46, 22, 46, 22, 22),
                 (22, 22, 46, 26, 26, 26, 46, 22),
@@ -203,7 +257,7 @@ package resource_data_pkg is
             )
         ),
         (
-            handle => GAME_WON_TILE_BITMAP,
+            handle => BITMAP_GAME_WON_TILE,
             bitmap => (
                 ( 7,  7, 38, 38, 38, 38, 38,  7),
                 ( 7,  7, 38, 46, 46,  1, 38, 17),

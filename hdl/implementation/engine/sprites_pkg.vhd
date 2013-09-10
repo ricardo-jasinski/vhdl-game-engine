@@ -67,11 +67,9 @@ package body sprites_pkg is
 
         updated_sprite.enabled := enabled;
 
-        -- TODO: make sure it happens outside of visible area
-        if raster_position.x = 100 and raster_position.y = 100 then
---        if (raster_position.x = GAME_VIEWPORT_WIDTH and
---            raster_position.y = GAME_VIEWPORT_HEIGHT)
---        then
+        if (raster_position.x = GAME_VIEWPORT_WIDTH-1 and
+            raster_position.y = GAME_VIEWPORT_HEIGHT-1)
+        then
             updated_sprite.x := position.x;
             updated_sprite.y := position.y;
         end if;
