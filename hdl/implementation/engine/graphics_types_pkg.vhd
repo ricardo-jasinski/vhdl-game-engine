@@ -40,6 +40,16 @@ end;
 
 package body graphics_types_pkg is
 
+    function bounding_box(rectangle_1, rectangle_2: rectangle_type) return rectangle_type is begin
+        return (
+            top => minimum(rectangle_1.top, rectangle_2.top),
+            left => minimum(rectangle_1.left, rectangle_2.left),
+            bottom => maximum(rectangle_1.top, rectangle_2.top),
+            right => maximum(rectangle_1.left, rectangle_2.left)
+        );
+    end;
+
+
     -- Add two points by summing each axis' coordinates
     function "+" (lhs, rhs: point_type) return point_type is begin
         return (lhs.x + rhs.x, lhs.y + rhs.y);

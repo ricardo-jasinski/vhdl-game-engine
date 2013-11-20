@@ -1,12 +1,12 @@
 library ieee;
 use ieee.std_logic_1164.all;
 
--- VAGE (VHDL Advanced Game Engine) demo using the 'Space SHooter' game demo
+-- VAGE (VHDL Advanced Game Engine) demo using the 'Space Shooter' game demo
 -- and the Altera DE2 board as a hardware platform. The purpose of this file
 -- is simply to instantiate the game top entity. It should not contain any -
 -- gamerelated code. This is also a perfect place for vendor-specific and
 -- board-specific code, such as PLLs.
-entity de2_adventure_demo_top is
+entity de2_space_shooter_demo_top is
     -- Port names as defined in the standard DE2 settings file.
     port (
         -- 50 MHz clock provided by the DE2  board
@@ -28,7 +28,7 @@ entity de2_adventure_demo_top is
     );
 end;
 
-architecture rtl of de2_adventure_demo_top is
+architecture rtl of de2_space_shooter_demo_top is
 
     -- Component declaration for the PLL used to generate the 25 MHz pixel
     -- clock from the board 50 MHz system clock
