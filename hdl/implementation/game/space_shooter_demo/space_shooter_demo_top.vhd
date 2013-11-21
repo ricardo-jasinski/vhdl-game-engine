@@ -2,6 +2,7 @@ library ieee;
 use ieee.std_logic_1164.all;
 use work.basic_types_pkg.all;
 use work.input_types_pkg.all;
+use work.colors_pkg.all;
 use work.graphics_types_pkg.all;
 use work.sprites_pkg.all;
 use work.game_state_pkg.all;
@@ -94,7 +95,7 @@ architecture rtl of space_shooter_demo_top is
 
     signal in_buttons: input_buttons_type;
     signal game_state: game_state_type;
-
+    
 begin
 
     ----------------------------------------------------------------------------
@@ -168,10 +169,10 @@ begin
         );
 
     ----------------------------------------------------------------------------
-    -- Section 4) Select a background bitmap or based on current game state
+    -- Section 4) Select a background bitmap based on current game state
     ----------------------------------------------------------------------------
 
-    background_bitmap <= (others => (others => 34));
+    background_bitmap <= (others => (others => PC_BLACK));
 
     ----------------------------------------------------------------------------
     -- Section 5) Convert signals between std_logic and custom data types.

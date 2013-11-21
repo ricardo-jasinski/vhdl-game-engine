@@ -47,8 +47,8 @@ architecture testbench of sprites_engine_tb is
     );
 
     constant SPRITES: sprites_array_type := (
-        (x => 1, y => 1, bitmap => TOP_LEFT_SQUARE_BITMAP),
-        (x => 1, y => 1, bitmap => BOTTOM_RIGHT_TRIANGLE_BITMAP)
+        (x => 1, y => 1, bitmap => TOP_LEFT_SQUARE_BITMAP, enabled => true),
+        (x => 1, y => 1, bitmap => BOTTOM_RIGHT_TRIANGLE_BITMAP, enabled => true)
     );
 
     constant SPRITES_COORDINATES: point_array_type(SPRITES'range) := (
@@ -66,8 +66,8 @@ begin
     uut: entity work.sprites_engine
         generic map (
             SPRITES_INITIAL_VALUES => (
-                (x => 1, y => 1, bitmap => TOP_LEFT_SQUARE_BITMAP),
-                (x => 5, y => 5, bitmap => BOTTOM_RIGHT_TRIANGLE_BITMAP)
+                (x => 1, y => 1, bitmap => TOP_LEFT_SQUARE_BITMAP, enabled => true),
+                (x => 5, y => 5, bitmap => BOTTOM_RIGHT_TRIANGLE_BITMAP, enabled => true)
             ),
             SPRITES_COLLISION_QUERY => ( (0,1), (0,1) )
         )
@@ -78,7 +78,8 @@ begin
             sprites_coordinates => SPRITES_COORDINATES,
             sprite_pixel => sprite_pixel,
             sprite_pixel_is_valid => sprite_pixel_is_valid,
-            sprite_collisions_results => sprite_collisions_results
+            sprite_collisions_results => sprite_collisions_results,
+            sprites_enabled => (others => true)
         );
 
     clock <= not clock after 10 ns;

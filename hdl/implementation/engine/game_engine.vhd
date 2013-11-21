@@ -5,8 +5,13 @@ use work.sprites_pkg.all;
 use work.game_state_pkg.all;
 use work.vga_pkg.all;
 use work.basic_types_pkg.all;
+use work.text_mode_graphics_pkg.all; -- temp (STRINGS)
 
--- wanted features:
+-- The game engine handles all operations that are independent from the game.
+-- The entity cooperates with game_logic in order to make most of the game
+-- work automatically, from the initial definitions provided by th designer.
+--
+-- Missing/wanted features:
 --   * sprite movement (done!)
 --   * sprite animation
 --   * sprite collision (done!)
@@ -17,6 +22,7 @@ use work.basic_types_pkg.all;
 --   * enable/disable each sprite
 --   * zoom factor (done!)
 --   * user input (done!)
+--   * text output
 entity game_engine is
     generic (
         SPRITES_INITIAL_VALUES: sprites_array_type;
@@ -66,6 +72,7 @@ begin
             sprites_coordinates => sprites_coordinates,
             sprites_enabled => sprites_enabled,
             sprite_collisions_results => sprite_collisions_results,
-            background_bitmap => background_bitmap
+            background_bitmap => background_bitmap,
+            text_strings => STRINGS
          );
 end;

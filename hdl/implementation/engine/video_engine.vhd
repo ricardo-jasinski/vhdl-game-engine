@@ -7,6 +7,7 @@ use work.sprites_pkg.all;
 use work.game_state_pkg.all;
 use work.colors_pkg.all;
 use work.vga_pkg.all;
+use work.text_mode_graphics_pkg.all;
 
 -- The video engine produces the signals to drive a VGA display from the game
 -- data provided. Its main functions are:
@@ -31,7 +32,8 @@ entity video_engine is
         sprites_coordinates: in point_array_type(SPRITES_INITIAL_VALUES'range);
         sprites_enabled: in bool_vector(SPRITES_INITIAL_VALUES'range);
         sprite_collisions_results: out bool_vector;
-        background_bitmap: paletted_bitmap_type
+        background_bitmap: paletted_bitmap_type;
+        text_strings: graphics_strings_type
     );
 end;
 
@@ -91,6 +93,8 @@ begin
     begin
         if not video_on then
             palette_pixel := PC_BLACK;
+        elsif text_pixel_at_x_y(raster_position.x, raster_position.y) then
+            palette_pixel := TEXT_COLOR;
         elsif sprite_pixel_is_valid then
             palette_pixel := sprite_pixel;
         else

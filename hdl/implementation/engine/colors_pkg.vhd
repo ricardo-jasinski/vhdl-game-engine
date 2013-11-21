@@ -118,6 +118,7 @@ package colors_pkg is
     constant PC_TRANSPARENT: palette_color_type := 0;
     constant PC_DARK_JUNGLE_GREEN: palette_color_type := 11;
     constant PC_BLACK: palette_color_type := 34;
+    constant PC_WHITE: palette_color_type := 53;
     constant RGB_BLACK: rgb_color_type := (0, 0, 0);
 
     function output_pixel_from_rgb_color(rgb_pixel: rgb_color_type) return output_pixel_type;
