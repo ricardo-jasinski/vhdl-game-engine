@@ -57,4 +57,11 @@ package resource_handles_pkg is
         NPC_BAT,
         NPC_REAPER
     );
+    
+    -- Enumerated type for referencing all the text strings used in the game.
+    type string_handle_type is (
+        STRING_GAME_TITLE,
+        STRING_PLAYER_STATS
+    );
+    
 end;

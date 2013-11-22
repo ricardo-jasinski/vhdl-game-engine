@@ -43,7 +43,7 @@ entity game_logic is
         sprites_enabled: out bool_vector;
         -- Each element is 'true' while the two corresponding sprites are colliding.
         sprite_collisions: in bool_vector;
-        --
+        -- Text strings displayed on the screen
         text_mode_strings: out text_mode_strings_type;
         
         input_buttons: in input_buttons_type;
@@ -217,26 +217,12 @@ begin
             visible => true
         )
     );
---    strings <= (
---        STRING_GAME_TITLE => (
---            x => 30,
---            y => 0,
---            text => "Space shooter   ",
---            visible => true
---        ),
---        STRING_SCORE => (
---            x => 0,
---            y => 24,
---            text => "SCORE:     0    ",
---            visible => true
---        )
---    );
 
     ----------------------------------------------------------------------------
     -- Section 5) Update game state. This game has a very simple state logic:
     -- RESET --> PLAY --> GAME_WON or GAME_OVER
+    ----------------------------------------------------------------------------
     game_won <= false;
---    game_over <= enemy_ship_collision_1 or enemy_ship_collision_2;
     process (clock, reset) begin
         if reset then
             game_state_signal <= GS_RESET;
@@ -264,7 +250,6 @@ begin
 
     debug_bits(7 downto 0) <= std_logic_vector_from_bool_vector(sprite_collisions);
 --    debug_bits(7 downto 0) <= std_logic_vector_from_bool_vector(sprites_enabled_signal)(0 to 7);
-
 --    debug_bits(0) <= '1' when enemy_ship_collision_2 else '0';
 --    debug_bits(1) <= '1' when enemy_ship_collision_1 else '0';
 --    debug_bits(2) <= '1';-- when death_by_oryx else '0';

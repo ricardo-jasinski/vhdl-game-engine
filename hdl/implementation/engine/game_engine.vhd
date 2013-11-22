@@ -5,7 +5,7 @@ use work.sprites_pkg.all;
 use work.game_state_pkg.all;
 use work.vga_pkg.all;
 use work.basic_types_pkg.all;
-use work.text_mode_pkg.all; -- temp (STRINGS)
+use work.text_mode_pkg.all;
 
 -- The game engine handles all operations that are independent from the game.
 -- The entity cooperates with game_logic in order to make most of the game

@@ -493,6 +493,8 @@ set_global_assignment -name PARTITION_NETLIST_TYPE SOURCE -entity sprites_engine
 set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_ROUTING -entity sprites_engine_demo -section_id Top
 set_global_assignment -name PARTITION_COLOR 16764057 -entity sprites_engine_demo -section_id Top
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -entity sprites_engine_demo -section_id Top
+set_global_assignment -name VHDL_FILE ../../../hdl/implementation/engine/font_pkg.vhd
+set_global_assignment -name VHDL_FILE ../../../hdl/implementation/engine/text_mode_pkg.vhd
 set_global_assignment -name VHDL_FILE ../../../hdl/implementation/engine/resource_handles_helper_pkg.vhd
 set_global_assignment -name VHDL_FILE ../../../hdl/implementation/engine/resource_data_helper_pkg.vhd
 set_global_assignment -name VHDL_FILE ../../../hdl/implementation/engine/npc_ai_projectile.vhd

@@ -3,6 +3,7 @@ use ieee.std_logic_1164.all;
 use work.basic_types_pkg.all;
 use work.input_types_pkg.all;
 use work.graphics_types_pkg.all;
+use work.text_mode_pkg.all;
 use work.resource_data_helper_pkg.all;
 use work.resource_handles_pkg.all;
 use work.resource_handles_helper_pkg.all;
@@ -15,11 +16,17 @@ entity game_logic is
         time_base_50_ms: in std_logic;
         npc_positions: in point_array_type;
         npc_target_positions: out point_array_type;
+
         -- Each element is 'true' while the two corresponding sprites are colliding.
         sprite_collisions: in bool_vector;
         sprites_positions: out point_array_type;
+        
+        -- Text strings displayed on the screen
+        text_mode_strings: out text_mode_strings_type;
+        
         input_buttons: in input_buttons_type;
         game_state: out game_state_type;
+        
         -- debug pins to help debug game logic (e.g., connecting to board leds)
         debug_bits: out std_logic_vector(7 downto 0)
     );
@@ -61,7 +68,8 @@ begin
     --   1) Update player position
     --   2) Update NPC inputs (target positions)
     --   3) Provide a screen position for each sprite
-    --   4) Update game state
+    --   4) Update text strings displayed on the screen
+    --   5) Update game state
     ----------------------------------------------------------------------------
 
     ----------------------------------------------------------------------------
@@ -118,7 +126,22 @@ begin
     ));
 
     ----------------------------------------------------------------------------
-    -- Section 4) Update game state. This game has a very simple state logic:
+    -- Section 4) Update text strings displayed on the screen.
+    text_mode_strings <= (
+        (   x => 30,
+            y => 0,
+            text => "Mighty Heroes   ",
+            visible => true
+        ),
+        (   x => 1,
+            y => 24,
+            text => " HP:64  MP:23   ",
+            visible => true
+        )
+    );
+
+    ----------------------------------------------------------------------------
+    -- Section 5) Update game state. This game has a very simple state logic:
     -- RESET --> PLAY --> GAME_WON or GAME_OVER
     ----------------------------------------------------------------------------
     game_won <= treasure_found;
