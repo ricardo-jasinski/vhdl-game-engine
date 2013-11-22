@@ -28,7 +28,7 @@ package text_mode_pkg is
     type text_mode_strings_type is array (natural range <>) of text_mode_string_type;
 
     function character_at_x_y(x, y: text_coordinate_type; strings: text_mode_strings_type) return character;
-    function text_pixel_at_x_y(x, y: coordinate_type; strings: text_mode_strings_type) return boolean;
+    function text_pixel_at_x_y(x, y: pixel_coordinate_type; strings: text_mode_strings_type) return boolean;
 end;
 
 package body text_mode_pkg is
@@ -44,7 +44,8 @@ package body text_mode_pkg is
         return ' ';
     end;
 
-    function text_pixel_at_x_y(x, y: text_coordinate_type; strings: text_mode_strings_type) return boolean is
+    -- Return true when
+    function text_pixel_at_x_y(x, y: pixel_coordinate_type; strings: text_mode_strings_type) return boolean is
         variable char: character;
         variable ascii_code: natural range 0 to 127;
         variable glyph: glyph_type;
