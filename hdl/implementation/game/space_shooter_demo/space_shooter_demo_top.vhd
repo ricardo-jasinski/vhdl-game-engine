@@ -131,7 +131,7 @@ begin
             input_buttons  => in_buttons,
             game_state => game_state,
             debug_bits => debug_bits,
-            strings => text_mode_strings
+            text_mode_strings => text_mode_strings
         );
 
     ----------------------------------------------------------------------------

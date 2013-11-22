@@ -44,7 +44,7 @@ entity game_logic is
         -- Each element is 'true' while the two corresponding sprites are colliding.
         sprite_collisions: in bool_vector;
         --
-        strings: out text_mode_strings_type;
+        text_mode_strings: out text_mode_strings_type;
         
         input_buttons: in input_buttons_type;
         game_state: out game_state_type;
@@ -205,7 +205,7 @@ begin
     ----------------------------------------------------------------------------
     -- Section 4) Update text strings displayed on the screen.
     
-    strings <= (
+    text_mode_strings <= (
         (   x => 30,
             y => 0,
             text => "Space shooter   ",

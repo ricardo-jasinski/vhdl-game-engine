@@ -493,8 +493,8 @@ set_instance_assignment -name TSU_REQUIREMENT "10 ns" -from * -to *
 set_instance_assignment -name CURRENT_STRENGTH_NEW "MINIMUM CURRENT" -to *
 set_instance_assignment -name CURRENT_STRENGTH_NEW "MAXIMUM CURRENT" -to I2C_SCLK
 set_instance_assignment -name CURRENT_STRENGTH_NEW "MAXIMUM CURRENT" -to I2C_SDAT
+set_global_assignment -name VHDL_FILE ../../../hdl/implementation/engine/text_mode_pkg.vhd
 set_global_assignment -name VHDL_FILE ../../../hdl/implementation/engine/font_pkg.vhd
-set_global_assignment -name VHDL_FILE ../../../hdl/implementation/engine/text_mode_graphics_pkg.vhd
 set_global_assignment -name VHDL_FILE ../../../hdl/implementation/engine/npc_ai_projectile.vhd
 set_global_assignment -name VHDL_FILE ../../../hdl/implementation/engine/resource_handles_helper_pkg.vhd
 set_global_assignment -name VHDL_FILE ../../../hdl/implementation/engine/resource_data_helper_pkg.vhd
