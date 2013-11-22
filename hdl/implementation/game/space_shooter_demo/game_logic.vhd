@@ -3,6 +3,7 @@ use ieee.std_logic_1164.all;
 use work.basic_types_pkg.all;
 use work.input_types_pkg.all;
 use work.graphics_types_pkg.all;
+use work.text_mode_pkg.all;
 use work.resource_data_helper_pkg.all;
 use work.resource_handles_pkg.all;
 use work.resource_handles_helper_pkg.all;
@@ -42,6 +43,9 @@ entity game_logic is
         sprites_enabled: out bool_vector;
         -- Each element is 'true' while the two corresponding sprites are colliding.
         sprite_collisions: in bool_vector;
+        --
+        strings: out text_mode_strings_type;
+        
         input_buttons: in input_buttons_type;
         game_state: out game_state_type;
         -- debug pins to help debug game logic (e.g., connecting to board leds)
@@ -79,7 +83,8 @@ begin
     --   1) Update player position
     --   2) Generate NPC input data (enables and target positions)
     --   3) Generate sprite input data (enables and screen position)
-    --   4) Update game state
+    --   4) Update text strings displayed on the screen
+    --   5) Update game state
     ----------------------------------------------------------------------------
 
     ----------------------------------------------------------------------------
@@ -125,7 +130,7 @@ begin
     -- Section 2) Update NPC NPC input data (enables and target positions)
     ----------------------------------------------------------------------------
 
-    -- We only need to assign the values correspoding to followers and projectiles
+    -- We only need to assign the values corresponding to followers and projectiles
     npc_assigned_positions( get_id(NPC_PLAYER_SHOT) ) <= player_position + (16, 0);
     npc_assigned_positions( get_id(NPC_ENEMY_SHIP) ) <= player_position + (24, -4);
 
@@ -198,7 +203,37 @@ begin
 
 
     ----------------------------------------------------------------------------
-    -- Section 4) Update game state. This game has a very simple state logic:
+    -- Section 4) Update text strings displayed on the screen.
+    
+    strings <= (
+        (   x => 30,
+            y => 0,
+            text => "Space shooter   ",
+            visible => true
+        ),
+        (   x => 0,
+            y => 24,
+            text => "SCORE:     0    ",
+            visible => true
+        )
+    );
+--    strings <= (
+--        STRING_GAME_TITLE => (
+--            x => 30,
+--            y => 0,
+--            text => "Space shooter   ",
+--            visible => true
+--        ),
+--        STRING_SCORE => (
+--            x => 0,
+--            y => 24,
+--            text => "SCORE:     0    ",
+--            visible => true
+--        )
+--    );
+
+    ----------------------------------------------------------------------------
+    -- Section 5) Update game state. This game has a very simple state logic:
     -- RESET --> PLAY --> GAME_WON or GAME_OVER
     game_won <= false;
 --    game_over <= enemy_ship_collision_1 or enemy_ship_collision_2;

@@ -5,7 +5,7 @@ use work.sprites_pkg.all;
 use work.game_state_pkg.all;
 use work.vga_pkg.all;
 use work.basic_types_pkg.all;
-use work.text_mode_graphics_pkg.all; -- temp (STRINGS)
+use work.text_mode_pkg.all; -- temp (STRINGS)
 
 -- The game engine handles all operations that are independent from the game.
 -- The entity cooperates with game_logic in order to make most of the game
@@ -42,7 +42,9 @@ entity game_engine is
         time_base_50_ms: out std_logic;
 
         game_state: in game_state_type;
-        background_bitmap: paletted_bitmap_type;
+        background_bitmap: in paletted_bitmap_type;
+        
+        text_mode_strings: in text_mode_strings_type;
 
         vga_clock_in: in std_logic;
         vga_signals: out vga_output_signals_type
@@ -73,6 +75,6 @@ begin
             sprites_enabled => sprites_enabled,
             sprite_collisions_results => sprite_collisions_results,
             background_bitmap => background_bitmap,
-            text_strings => STRINGS
+            text_mode_strings => text_mode_strings
          );
 end;

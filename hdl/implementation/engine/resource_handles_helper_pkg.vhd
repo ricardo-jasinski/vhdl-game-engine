@@ -54,9 +54,18 @@ package resource_handles_helper_pkg is
     end record;
     type npc_init_array_type is array (natural range<>) of npc_init_type;
 
+    function game_strings_count return natural;
+
+
 end;
 
 package body resource_handles_helper_pkg is
+
+    function game_strings_count return natural is begin
+        return 1 + string_handle_type'pos(string_handle_type'right);
+    end;
+
+
     -- Get a sprite ID (an integer non-negative number) associated with the
     -- given sprite handle.
     function get_sprite_id_from_handle(sprite_handle: sprite_handle_type) return natural is begin

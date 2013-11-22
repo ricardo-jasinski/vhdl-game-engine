@@ -4,9 +4,11 @@ use work.basic_types_pkg.all;
 use work.input_types_pkg.all;
 use work.colors_pkg.all;
 use work.graphics_types_pkg.all;
+use work.text_mode_pkg.all;
 use work.sprites_pkg.all;
 use work.game_state_pkg.all;
 use work.resource_handles_pkg.all;
+use work.resource_handles_helper_pkg.all;
 use work.resource_data_pkg.all;
 use work.resource_data_helper_pkg.all;
 use work.vga_pkg.all;
@@ -96,6 +98,9 @@ architecture rtl of space_shooter_demo_top is
     signal in_buttons: input_buttons_type;
     signal game_state: game_state_type;
     
+    -- Text strgins displayed on the screen
+    signal text_mode_strings: text_mode_strings_type(0 to game_strings_count-1);
+    
 begin
 
     ----------------------------------------------------------------------------
@@ -125,7 +130,8 @@ begin
             sprites_positions => sprite_positions,
             input_buttons  => in_buttons,
             game_state => game_state,
-            debug_bits => debug_bits
+            debug_bits => debug_bits,
+            strings => text_mode_strings
         );
 
     ----------------------------------------------------------------------------
@@ -165,7 +171,8 @@ begin
             game_state => game_state,
             background_bitmap => background_bitmap,
             vga_clock_in => vga_clock_in,
-            vga_signals => vga_output_signals
+            vga_signals => vga_output_signals,
+            text_mode_strings => text_mode_strings
         );
 
     ----------------------------------------------------------------------------
@@ -189,7 +196,7 @@ begin
         fire => input_switches(0)
     );
 
-    -- Connect each VGA output signal to the correspoding VGA pin or port
+    -- Connect each VGA output signal to the corresponding VGA pin or port
     vga_clock_out <= vga_output_signals.vga_clock_out;
     vga_blank <= vga_output_signals.blank;
     vga_n_hsync <= vga_output_signals.hsync;
