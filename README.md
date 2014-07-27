@@ -4,7 +4,7 @@ A game engine implemented purely in hardware using the VHDL language
 
 (C) Ricardo Jasinski, 2013
 
-Screenshots on the Wiki: https://github.com/ricardo-jasinski/vhdl-game-engine/wiki
+![Adventure Demo Screenshot](https://raw.githubusercontent.com/ricardo-jasinski/vhdl-game-engine/master/doc/screenshots/screenshot_01_adventure.png "Adventure Demo Screenshot") ![Space Shooter Demo Screenshot](https://raw.githubusercontent.com/ricardo-jasinski/vhdl-game-engine/master/doc/screenshots/screenshot_02_space_shooter.png "Space Shooter Demo Screenshot") 
 
 Summary
 =======
